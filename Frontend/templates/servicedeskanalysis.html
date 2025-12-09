@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.R.E.A.T.E - E2E Automation</title>
+    <!-- Paths updated -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- adding webpage function -->
+    <script src="{{ url_for('static', filename='js/form-webpage-function.js') }}"></script>
+</head>
+
+<body class="subpage blue-theme">
+    <div id="particles-js"></div>
+
+    <header class="app-header sticky-header">
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-cogs logo-icon"></i>
+                <span>ASTRA</span>
+            </a>
+
+            <!-- Theme Toggle Switch -->
+            <div class="theme-switch-wrapper">
+                <i class="fas fa-sun theme-icon light-icon"></i>
+                <label class="theme-switch" for="theme-checkbox">
+                    <input type="checkbox" id="theme-checkbox" />
+                    <div class="slider round"></div>
+                </label>
+                <i class="fas fa-moon theme-icon dark-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="maintenance-page-content">
+        <div class="container maintenance-container">
+            <!-- Changed Icon -->
+            <h1 class="page-title">Service-Desk Ticket Analysis</h1>
+            <form id="upload-service-desk" action="{{ url_for('servicedeskanalysis') }}" method="POST"
+                enctype="multipart/form-data">
+                <fieldset class="upload-section">
+                    <legend><i class="fas fa-file-upload"></i>Ticket File Upload</legend>
+                    <div class="form-group file-upload-group">
+                        <label for="ticket-dump" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Select Ticket Dump File (.xlsx)</span>
+                        </label>
+                        <input type="file" id="ticket-dump" name="service_desk_dump_file" accept=".xlsx" required>
+                        <span id="file-name-display">No file selected</span>
+                    </div>
+                </fieldset>
+
+                <div id="status-message" role="alert"></div>
+                <button type="submit" id="submit-button" class="submit-button large-button">
+                    <span><i class="fas fa-paper-plane"></i>Submit Request</span>
+                    <div class="button-loader"></div>
+                </button>
+        </div>
+        </form>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <i class="fas fa-cogs logo-icon"></i> C.R.E.A.T.E
+            </div>
+            <div class="footer-copy">
+                &copy; 2025 CREATE Team. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    <!-- in-line script for file name shown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('ticket-dump');
+            const fileNameDisplay = document.getElementById('file-name-display');
+
+            fileInput.addEventListener('change', function () {
+                const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+                fileNameDisplay.textContent = fileName;
+            });
+        });
+    </script>
+
+    <!-- script section -->
+    <script src="{{ url_for('static', filename='js/particles-config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script-theme.js') }}"></script>
+    <!-- Scripts at the end, paths updated -->
+    <script src="{{ url_for('static', filename='js/service-desk-filehandler-script.js') }}"></script>
+</body>
+
+</html>

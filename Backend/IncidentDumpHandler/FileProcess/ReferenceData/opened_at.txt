@@ -1,0 +1,12 @@
+openedat
+opened
+opendate
+createdat
+created
+createddate
+reporteddate
+reported
+reportedat
+syscreatedon
+creation_time
+openeddate

@@ -1,0 +1,132 @@
+{
+    "HTML_TAG": {
+        "pattern": "<[^>]+>",
+        "flags": ["IGNORECASE", "DOTALL"],
+        "comment": "Matches any HTML tags like <div>, <p>, <span>, etc."
+    },
+    "HTML_BODY": {
+        "pattern": "<html.*?>.*?</html>|<body.*?>.*?</body>",
+        "flags": ["IGNORECASE", "DOTALL"],
+        "comment": "Matches entire <html> or <body> sections including nested content."
+    },
+    "TIMESTAMP": {
+        "pattern": "\\b\\d{1,2}[/\\-]\\d{1,2}[/\\-]\\d{2,4}[\\sT,]*(\\d{1,2}[:]\\d{2}([:]{1}\\d{2})?\\s?(AM|PM)?)?\\b",
+        "flags": ["IGNORECASE", "MULTILINE"],
+        "comment": "Matches timestamps like '12/31/2023', '12-31-2023', or '12/31/23 10:30 AM'."
+    },
+    "TIMESTAMP_ISO": {
+        "pattern": "\\b\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches ISO formatted timestamps like '2023-12-31 14:30:00'."
+    },
+    "DATESTAMP_ISO": {
+        "pattern": "\\b(?:Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December) \\d{1,2},\\s\\d{4}\\s\\d{1,2}:\\d{2}\\s?(?:AM|PM)\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches datestamps with month names and optional time, e.g., 'December 31, 2023 10:30 AM'."
+    },
+    "DATESTAMP_UTC": {
+        "pattern": "\\b\\d{1,2}:\\d{2}\\s*\\(UTC\\)\\s*\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches datestamps like '10:30 (UTC) 31.12.2023'."
+    },
+    "DATESTAMP": {
+        "pattern": "\\b\\d{1,2}-(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{2,4}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches short datestamps like '31-Dec-23' or '11-AUG-2025'."
+    },
+    "DATETIMEFULL_STAMP": {
+        "pattern": "\\b(?:Mon|Monday|Tue|Tuesday|Wed|Wednesday|Thu|Thursday|Fri|Friday|Sat|Saturday|Sun|Sunday),\\s*(?:Jan|January|Feb|February|Mar|March|Apr|April|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December)\\s+\\d{1,2},\\s\\d{4}\\s\\d{1,2}:\\d{2}\\s?(?:AM|PM)\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches full datetimes with day of week and month name, e.g., 'Monday, December 31, 2023 10:30 AM'."
+    },
+    "TICKET_ID": {
+        "pattern": "\\b(?:INC|REQ|TASK|CHG|PRB|SCTASK|RITM)\\d{5,}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches ticket IDs like 'NC12345', 'REQ67890', 'TASK54321'."
+    },
+    "EMAIL": {
+        "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches standard email addresses."
+    },
+    "IPv4": {
+        "pattern": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+        "flags": [],
+        "comment": "Matches IPv4 addresses like '192.168.1.1'."
+    },
+    "IPv6": {
+        "pattern": "\\b(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches IPv6 addresses like '2001:0db8:85a3:0000:0000:8a2e:0370:7334'."
+    },
+    "MAC": {
+        "pattern": "\\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches MAC addresses like '00:1A:2B:3C:4D:5E' or '00-1A-2B-3C-4D-5E'."
+    },
+    "URL": {
+        "pattern": "\\b(?:https?://|www\\.)[^\\s/$.?#].[^\\s]*\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches URLs starting with 'http(s)://' or 'www.'."
+    },
+    "KB_NUMBER": {
+        "pattern": "\\bKB\\d{7}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches Microsoft KB article numbers like 'KB1234567'."
+    },
+    "KB_ATTACH_BLOCK": {
+        "pattern": "\\[code\\]<a title(.*?)\\[/code\\]",
+        "flags": ["DOTALL"],
+        "comment": "Matches KB attachment links inside code blocks."
+    },
+    "CODE_BLOCK": {
+        "pattern": "\\[code\\](.*?)\\[/code\\]",
+        "flags": ["IGNORECASE", "DOTALL"],
+        "comment": "Matches code blocks wrapped in [code]...[/code]."
+    },
+    "DECORATION": {
+        "pattern": "[=\\-*]{3,}",
+        "flags": ["MULTILINE"],
+        "comment": "Matches any sequence of 3 or more decoration characters (===, ---, ***) even if not on a separate line."
+    },
+    "SHA1": {
+        "pattern": "\\b[a-fA-F0-9]{40}\\b",
+        "flags": [],
+        "comment": "Matches SHA-1 hash values (40 hex characters)."
+    },
+    "SHA256": {
+        "pattern": "\\b[a-fA-F0-9]{64}\\b",
+        "flags": [],
+        "comment": "Matches SHA-256 hash values (64 hex characters)."
+    },
+    "SHA1_KEY_B64": {
+        "pattern": "\\b[A-Za-z0-9+/]{27,28}={0,2}\\b",
+        "flags": [],
+        "comment": "Matches base64-encoded SHA-1 keys (27-28 chars + optional padding)."
+    },
+    "SHA256_KEY_B64": {
+        "pattern": "\\b[A-Za-z0-9+/]{43,44}={0,2}\\b",
+        "flags": [],
+        "comment": "Matches base64-encoded SHA-256 keys (43-44 chars + optional padding)."
+    },
+    "HEX": {
+        "pattern": "\\b0x[a-fA-F0-9]+\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches hexadecimal numbers like '0x1A2B3C'."
+    },
+    "DOMAIN_NAME": {
+        "pattern": "\\b(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches domain names like 'example.com', 'sub.example.co.uk'."
+    },
+    "AD_OBJECT_ID": {
+        "pattern": "\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches Azure AD Object IDs or general GUIDs like '407d96f1-d7f7-4445-93c2-f34c1720384d'."
+    },
+    "HPO_MI_ID": {
+        "pattern": "\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{8}0000\\b",
+        "flags": ["IGNORECASE"],
+        "comment": "Matches HPE OMi event IDs like '7a089571-48ec-71f0-1d26-a481de500000'."
+    }
+}

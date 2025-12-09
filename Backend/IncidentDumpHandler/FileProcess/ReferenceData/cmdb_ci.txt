@@ -1,0 +1,6 @@
+cmdbci
+ci
+configitem
+cmdb
+configurationitem
+affectedci

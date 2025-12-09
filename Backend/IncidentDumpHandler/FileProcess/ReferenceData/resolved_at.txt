@@ -1,0 +1,7 @@
+resolvedat
+closedat
+closed
+resolved
+resolvedtime
+closetime
+resolveddate

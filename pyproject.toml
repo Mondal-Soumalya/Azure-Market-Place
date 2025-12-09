@@ -1,0 +1,20 @@
+[project]
+name = "final-deployment"
+version = "0.1.0"
+description = "ITSM Tool Ticket Analysis Tool"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "flask>=3.1.2",
+    "flask-cors>=6.0.1",
+    "nltk>=3.9.2",
+    "openai>=2.6.0",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.3",
+    "psycopg2>=2.9.11",
+    "python-dotenv>=1.1.1",
+    "rapidfuzz>=3.13.0",
+    "tenacity>=9.1.2",
+    "tiktoken>=0.12.0",
+]
