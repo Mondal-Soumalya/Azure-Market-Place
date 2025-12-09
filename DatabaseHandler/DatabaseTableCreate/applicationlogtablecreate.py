@@ -31,13 +31,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(application_log_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    # check if table is empty
-                    database_cursor.execute("SELECT COUNT(*) FROM application_log;")
-                    if (int(database_cursor.fetchone()[0]) == 0):
-                        database_cursor.execute("DROP TABLE application_log;")
-                        database_connection.commit()
-                    else:
-                        return {'status': 'SUCCESS', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': '"application_log" Table Already Present With Data'}
+                    return {'status': 'SUCCESS', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': '"application_log" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': str(error)}
 
