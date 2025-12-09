@@ -31,7 +31,13 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(bot_catalogue_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '3', 'message': '"bot_catalogue_details" Table Already Present'}
+                    # check if table is empty
+                    database_cursor.execute("SELECT COUNT(*) FROM bot_catalogue_details;")
+                    if int(database_cursor.fetchone()[0]) == 0:
+                        database_cursor.execute("DROP TABLE bot_catalogue_details;")
+                        database_connection.commit()
+                    else:
+                        return {'status': 'SUCCESS', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '3', 'message': '"bot_catalogue_details" Table Already Present With Data'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '3', 'message': str(error)}
 
