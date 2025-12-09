@@ -106,6 +106,6 @@ def skip_row_details_table_create(db_name: str, db_user: str, db_password: str, 
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '7', 'message': '"skip_row_details" Table Created With Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '7', 'message': '"skip_row_details" Table Created With Auto-Trigger Function'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '7', 'message': str(error)}

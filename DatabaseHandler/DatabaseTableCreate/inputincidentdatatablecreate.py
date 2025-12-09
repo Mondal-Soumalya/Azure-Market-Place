@@ -144,6 +144,6 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '7', 'message': '"input_incident_data" Table Created With Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '7', 'message': '"input_incident_data" Table Created With Auto-Trigger Function'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '7', 'message': str(error)}

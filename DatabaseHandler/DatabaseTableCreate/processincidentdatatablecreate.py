@@ -192,6 +192,6 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '7', 'message': '"processed_incident_data" Table Created With Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '7', 'message': '"processed_incident_data" Table Created With Auto-Trigger Function'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '7', 'message': str(error)}

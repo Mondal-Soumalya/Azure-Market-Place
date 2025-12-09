@@ -160,6 +160,6 @@ def file_process_status_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Process-Status-Table-Create', 'step': '8', 'message': '"file_process_status" Table Created With Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Process-Status-Table-Create', 'step': '8', 'message': '"file_process_status" Table Created With Auto-Trigger Function'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Process-Status-Table-Create', 'step': '8', 'message': str(error)}

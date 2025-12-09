@@ -63,12 +63,12 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         db_host = str(environment_values.get('DATABASE_HOST'))
         db_port = str(environment_values.get('DATABASE_PORT'))
         # define postgresql admin credential
-        admin_connection_params = {
-            'dbname' : 'postgres',
-            'user' : 'postgres',
-            'password' : '1234',
-            'host' : 'localhost',
-            'port' : '5432'
+        admin_database_connection_parameter = {
+            'dbname' : str(environment_values.get('ADMIN_DB_NAME')),
+            'user' : str(environment_values.get('ADMIN_DB_USER')),
+            'password' : str(environment_values.get('ADMIN_DB_PASSWORD')),
+            'host' : str(environment_values.get('ADMIN_DB_HOST')),
+            'port' : str(environment_values.get('ADMIN_DB_PORT'))
         }
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '7', 'message' : str(error)}
@@ -80,7 +80,7 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             SELECT FROM pg_database
             WHERE datname = %s
         );'''
-        database_connection = psycopg2.connect(**admin_connection_params) #type: ignore
+        database_connection = psycopg2.connect(**admin_database_connection_parameter) #type: ignore
         database_connection.autocommit = True  
         database_cursor = database_connection.cursor()
         database_cursor.execute(database_existence_check_sql, (db_name,))
