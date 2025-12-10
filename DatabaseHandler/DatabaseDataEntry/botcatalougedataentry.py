@@ -1,6 +1,6 @@
 # define "bot_catalogue_details_data_entry" function
 def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str, excel_file_path: str) -> dict[str, str]:
-    # importing python modules:S01
+    # importing python modules:S1
     try:
         import psycopg2
         import pandas
@@ -8,7 +8,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '1', 'message': str(error)}
 
-    # define database parameters:S02
+    # define database parameters:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -20,7 +20,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '2', 'message': str(error)}
 
-    # check if "bot_catalogue_details" table exists:S03
+    # check if "bot_catalogue_details" table exists:S3
     try:
         table_check_sql = '''
         SELECT EXISTS (
@@ -36,7 +36,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '3', 'message': str(error)}
 
-    # define UPSERT SQL:S04
+    # define UPSERT SQL:S4
     try:
         bot_catalogue_details_upsert_sql = '''
         INSERT INTO bot_catalogue_details (
@@ -62,7 +62,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '4', 'message': str(error)}
 
-    # verify Excel file:S05
+    # verify Excel file:S5
     try:
         excel_path = Path(str(excel_file_path).strip().strip('"'))
         if (not (excel_path.exists() and excel_path.is_file() and excel_path.suffix.lower() == '.xlsx')):
@@ -70,7 +70,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '5', 'message': str(error)}
 
-    # load input Excel:S06
+    # load input Excel:S6
     try:
         dataframe = pandas.read_excel(str(excel_path), keep_default_na = False)
         required_columns = [
@@ -83,7 +83,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '6', 'message': str(error)}
 
-    # prepare cleaned rows list:S07
+    # prepare cleaned rows list:S7
     try:
         def clean_cell(value):
             if value is None:
@@ -113,7 +113,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '7', 'message': str(error)}
 
-    # perform UPSERT into table:S08
+    # perform UPSERT into table:S8
     try:
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
             with database_connection.cursor() as database_cursor:

@@ -1,12 +1,12 @@
 # define "application_log_table_create" function
 def application_log_table_create(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str) -> dict[str, str]:
-    # importing python module:S01
+    # importing python module:S1
     try:
         import psycopg2
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '1', 'message': str(error)}
 
-    # define database connection parameter:S02
+    # define database connection parameter:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -19,7 +19,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '2', 'message': str(error)}
 
-    # check if "application_log" table already present:S03
+    # check if "application_log" table already present:S3
     try:
         application_log_table_present_check_sql = '''
         SELECT EXISTS (
@@ -35,7 +35,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': str(error)}
 
-    # execute table create query:S04
+    # execute table create query:S4
     try:
         application_log_table_create_sql = f'''
         CREATE TABLE application_log (
@@ -54,7 +54,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '4', 'message': str(error)}
 
-    # verify table created:S05
+    # verify table created:S5
     try:
         application_log_table_present_check_sql = '''
         SELECT EXISTS (
@@ -70,7 +70,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '5', 'message': str(error)}
 
-    # executing trigger functions:S06
+    # executing trigger functions:S6
     try:
         trigger_function_sql = '''
         DROP FUNCTION IF EXISTS normalize_application_log_fields();
@@ -95,7 +95,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '6', 'message': str(error)}
 
-    # executing trigger definition:S07
+    # executing trigger definition:S7
     try:
         trigger_definition_sql = '''
         DROP TRIGGER IF EXISTS trg_normalize_application_log_fields ON application_log;

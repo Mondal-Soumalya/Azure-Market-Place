@@ -6,7 +6,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
     OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
 
-    # importing python module:S01
+    # importing python module:S1
     try:
         from pathlib import Path
         import sys
@@ -16,20 +16,19 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '1', 'message' : str(error)}
 
-    # appending system path:S02
+    # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '2', 'message' : str(error)}
 
-    # importing user define function:S03
+    # importing user define function:S3
     try:
         from Backend.LogHandler.logwriter import log_writer
-        # from Backend.SnowHandler.createworknotes import create_worknotes
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '3', 'message' : str(error)}
 
-    # define folder and file path:S04
+    # define folder and file path:S4
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
@@ -38,7 +37,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '4', 'message' : str(error)}
 
-    # check if ".env" file is present:S05
+    # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
@@ -49,7 +48,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '5', 'message' : str(error)}
 
-    # load ".env" file into script:S06
+    # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
@@ -57,7 +56,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '6', 'message' : str(error)}
 
-    # define database connection parameter:S07
+    # define database connection parameter:S7
     try:
         database_connection_parameter = {
             "dbname" : str(environment_values.get('DATABASE_NAME')),
@@ -71,7 +70,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '7', 'message' : str(error)}
 
-    # check if "file_process_status" table present inside database:S08
+    # check if "file_process_status" table present inside database:S8
     try:
         file_process_status_table_present_check_sql = '''
         SELECT EXISTS (
@@ -91,15 +90,15 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '8', 'message' : str(error)}
 
-    #### starting mttr and aging analysis backend process:S09 #####
-    # importing "incident_mttr_aging_analysis" function:S09-A
+    #### starting mttr and aging analysis backend process:S9 #####
+    # importing "incident_mttr_aging_analysis" function:S9-A
     try:
         from Backend.IncidentDumpHandler.ESOARAnalysis.SupportScript.incidentmttrandaginganalysis import incident_mttr_aging_analysis
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-A', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-A', 'message' : str(error)}
 
-    # calling "incident_mttr_aging_analysis" function:S09-B
+    # calling "incident_mttr_aging_analysis" function:S9-B
     try:
         mttr_aging_analysis_process_start_time = time.time()
         mttr_aging_analysis_backend_response = incident_mttr_aging_analysis()
@@ -110,7 +109,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-B', 'message' : str(error)}
 
-    # check the result for "ERROR":S09-C
+    # check the result for "ERROR":S9-C
     try:
         if (str(mttr_aging_analysis_backend_response['status']).lower() == 'error'):
             MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = False
@@ -119,7 +118,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-C', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-C', 'message' : str(error)}
 
-    # check the result for "SUCCESS":S09-D
+    # check the result for "SUCCESS":S9-D
     if (str(mttr_aging_analysis_backend_response['status']).lower() == 'success'):
         try:
             elapsed_seconds = int((mttr_aging_analysis_process_end_time - mttr_aging_analysis_process_start_time) % 60) #type: ignore

@@ -1,6 +1,6 @@
 # define "incident_ticket_file_handler" function
 def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
-    # importing module:S01
+    # importing module:S1
     try:
         from pathlib import Path
         from dotenv import dotenv_values
@@ -17,20 +17,20 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '1', 'message' : str(error)}
 
-    # appending system path:S02
+    # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '2', 'message' : str(error)}
 
-    # importing user defined function:S03
+    # importing user defined function:S3
     try:
         from Backend.LogHandler.logwriter import log_writer
         from Backend.IncidentDumpHandler.incidentdataprocess import incident_data_process
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '3', 'message' : str(error)}
 
-    # define parent folder and file path:S04
+    # define parent folder and file path:S4
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
@@ -42,7 +42,7 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-File-Handler', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '4', 'message' : str(error)}
 
-    # check if folders are present:S05
+    # check if folders are present:S5
     try:
         folders_to_create = [submitted_files_folder_path, incident_files_folder_path, temp_files_dump_folder_path]
         # loop through each folder path and create if not exists
@@ -52,7 +52,7 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-File-Handler', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '5', 'message' : str(error)}
 
-    # check if ".env" file is present:S06
+    # check if ".env" file is present:S6
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
             log_writer(script_name = 'Incident-File-Handler', steps = '6', status = 'SUCCESS', message = '".env" File Is Present')
@@ -63,7 +63,7 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-File-Handler', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '6', 'message' : str(error)}
 
-    # load ".env" file into script:S07
+    # load ".env" file into script:S7
     try:
         environment_values = dotenv_values(env_file_path)
         log_writer(script_name = 'Incident-File-Handler', steps = '7', status = 'SUCCESS', message = '".env" File Loaded Into Script')
@@ -71,7 +71,7 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-File-Handler', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '7', 'message' : str(error)}
 
-    # define database connection parameter:S08
+    # define database connection parameter:S8
     try:
         database_connection_parameter = {
             "dbname" : str(environment_values.get('DATABASE_NAME')),
@@ -85,7 +85,7 @@ def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-File-Handler', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-Handler', 'step' : '8', 'message' : str(error)}
 
-    # check if "submitted_file_details" table present inside database:S09
+    # check if "submitted_file_details" table present inside database:S9
     try:
         submitted_file_details_table_present_check_sql = '''
         SELECT EXISTS (

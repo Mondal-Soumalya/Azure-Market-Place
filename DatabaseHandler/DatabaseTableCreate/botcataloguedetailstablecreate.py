@@ -1,12 +1,12 @@
 # define "bot_catalogue_details_table_create" function
 def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str) -> dict[str, str]:
-    # importing python module:S01
+    # importing python module:S1
     try:
         import psycopg2
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '1', 'message': str(error)}
 
-    # define database connection parameter:S02
+    # define database connection parameter:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -19,7 +19,7 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '2', 'message': str(error)}
 
-    # check if "bot_catalogue_details" table already present:S03
+    # check if "bot_catalogue_details" table already present:S3
     try:
         bot_catalogue_details_table_present_check_sql = '''
         SELECT EXISTS (
@@ -35,7 +35,7 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '3', 'message': str(error)}
 
-    # execute table create query:S04
+    # execute table create query:S4
     try:
         bot_catalogue_details_table_create_sql = f'''
         CREATE TABLE bot_catalogue_details (
@@ -64,7 +64,7 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '4', 'message': str(error)}
 
-    # verify table created:S05
+    # verify table created:S5
     try:
         bot_catalogue_details_table_present_check_sql = '''
         SELECT EXISTS (
@@ -80,7 +80,7 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '5', 'message': str(error)}
 
-    # executing trigger function:S06
+    # executing trigger function:S6
     try:
         trigger_function_sql = '''
         DROP FUNCTION IF EXISTS normalize_bot_fields();
@@ -105,7 +105,7 @@ def bot_catalogue_details_table_create(db_name: str, db_user: str, db_password: 
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Details-Table-Create', 'step': '6', 'message': str(error)}
 
-    # executing trigger definition:S07
+    # executing trigger definition:S7
     try:
         trigger_definition_sql = '''
         DROP TRIGGER IF EXISTS trg_normalize_bot_fields ON bot_catalogue_details;

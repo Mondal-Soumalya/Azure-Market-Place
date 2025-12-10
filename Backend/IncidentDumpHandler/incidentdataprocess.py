@@ -10,7 +10,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
     INCIDENT_DATA_AUTOMATION_MAPPING_PROCESS_COMPLETE_STATUS = False
     INCIDENT_DATA_ESOAR_ANALYSIS_PROCESS_COMPLETE_STATUS = False
 
-    # importing python module:S01
+    # importing python module:S1
     try:
         from pathlib import Path
         import sys
@@ -18,21 +18,21 @@ def incident_data_process(file_unique_id: str, file_path: str):
         import psycopg2
         import time
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S01] - {str(error)}')
+        print(f'ERROR - [Incident-Data-Process:S1] - {str(error)}')
 
-    # appending system path:S02
+    # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S02] - {str(error)}')
+        print(f'ERROR - [Incident-Data-Process:S2] - {str(error)}')
 
-    # importing user define function:S03
+    # importing user define function:S3
     try:
         from Backend.LogHandler.logwriter import log_writer
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S03] - {str(error)}')
+        print(f'ERROR - [Incident-Data-Process:S3] - {str(error)}')
 
-    # define folder and file path:S04
+    # define folder and file path:S4
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
@@ -41,7 +41,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         log_writer(script_name = 'Incident-Data-Process', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '4', 'message' : str(error)}
 
-    # check if ".env" file is present:S05
+    # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
             log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
@@ -52,7 +52,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '5', 'message' : str(error)}
 
-    # load ".env" file into script:S06
+    # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
         log_writer(script_name = 'Incident-Data-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
@@ -60,7 +60,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         log_writer(script_name = 'Incident-Data-Process', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '6', 'message' : str(error)}
 
-    # define database connection parameter:S07
+    # define database connection parameter:S7
     try:
         database_connection_parameter = {
             "dbname" : str(environment_values.get('DATABASE_NAME')),
@@ -74,7 +74,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         log_writer(script_name = 'Incident-Data-Process', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '7', 'message' : str(error)}
 
-    # check if "submitted_file_details" table present inside database:S08
+    # check if "submitted_file_details" table present inside database:S8
     try:
         submitted_file_details_table_present_check_sql = '''
         SELECT EXISTS (
@@ -94,7 +94,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '8', 'message' : str(error)}
 
-    # check if "file_process_status" table present inside database:S09
+    # check if "file_process_status" table present inside database:S9
     try:
         file_process_status_table_present_check_sql = '''
         SELECT EXISTS (
@@ -541,41 +541,41 @@ def incident_data_process(file_unique_id: str, file_path: str):
                 log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'ERROR', message = str(error))
     ######################################################
 
-    ##### starting "incident_esoar_process" backend process:S16 #####
+    ##### starting "incident_esoar_process" backend process:S17 #####
     if (INCIDENT_DATA_AUTOMATION_MAPPING_PROCESS_COMPLETE_STATUS):
-        # importing "incident_esoar_process" fucntion:S16-A
+        # importing "incident_esoar_process" fucntion:S17-A
         try:
             from Backend.IncidentDumpHandler.ESOARAnalysis.incidentesoarprocess import incident_esoar_process
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '16-A', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '17-A', status = 'ERROR', message = str(error))
 
-        # calling "incident_esoar_process" function:S16-B
+        # calling "incident_esoar_process" function:S17-B
         try:
             esoar_analysis_function_response = incident_esoar_process(file_unique_id = str(file_unique_id))
             if (esoar_analysis_function_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account ESO Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'INFO', message = f'For Account ESO Analysis Backend Process Response Generate')
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = str(error))
 
-        # check the result for "ERROR":S16-C
+        # check the result for "ERROR":S17-C
         try:
             if (str(esoar_analysis_function_response['status']).lower() == 'error'):
                 INCIDENT_DATA_ESOAR_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                 log_writer(script_name = str(esoar_analysis_function_response['file_name']), steps = str(esoar_analysis_function_response['step']), status = 'ERROR', message = str(esoar_analysis_function_response['message']))
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '16-C', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '17-C', status = 'ERROR', message = str(error))
 
-        # check the result for "SUCCESS":S16-D
+        # check the result for "SUCCESS":S17-D
         try:
             if (str(esoar_analysis_function_response['status']).lower() == 'success'):
                 INCIDENT_DATA_ESOAR_ANALYSIS_PROCESS_COMPLETE_STATUS = True
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '17-D', status = 'ERROR', message = str(error))
     #####################################################
 
-    # updating final "process_name" and "completion_time_seconds" inside "file_process_status":S17
+    # updating final "process_name" and "completion_time_seconds" inside "file_process_status":S18
     if (INCIDENT_DATA_ESOAR_ANALYSIS_PROCESS_COMPLETE_STATUS):
-        # fetching total "completion_time_seconds":S17-A
+        # fetching total "completion_time_seconds":S18-A
         try:
             fetch_process_total_completion_seconds_sql = '''
             SELECT SUM(completion_time_seconds) AS total_completion_seconds
@@ -587,13 +587,13 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     all_process_total_completion_seconds = database_cursor.fetchone()[0]
                     # check result
                     if ((all_process_total_completion_seconds is not None) and (int(all_process_total_completion_seconds) > 0)):
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-A', status = 'SUCCESS', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Fetched')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'SUCCESS', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Fetched')
                     else:
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-A', status = 'ERROR', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Not Fetched')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'ERROR', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Not Fetched')
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '17-A', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'ERROR', message = str(error))
 
-        # updating "process_name" to "Analysis Complete":S17-B
+        # updating "process_name" to "Analysis Complete":S18-B
         try:
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
@@ -610,10 +610,10 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         database_connection.rollback()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = f'For Account Whole Analysis Complete')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'ERROR', message = f'For Account Whole Analysis Complete')
                     else:
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'SUCCESS', message = f'For Account Whole Analysis Not Completed')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'SUCCESS', message = f'For Account Whole Analysis Not Completed')
         except Exception as error:
-            log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = str(error))
+            log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'ERROR', message = str(error))
     #####################################################

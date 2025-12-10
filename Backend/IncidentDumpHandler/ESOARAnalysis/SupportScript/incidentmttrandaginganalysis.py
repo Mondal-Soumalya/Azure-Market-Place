@@ -1,6 +1,6 @@
 # define "incident_mttr_aging_analysis" function
 def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
-    # importing python module:S01
+    # importing python module:S1
     try:
         from pathlib import Path
         import sys
@@ -12,19 +12,19 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '1', 'message' : str(error)}
 
-    # appending system path:S02
+    # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '2', 'message' : str(error)}
 
-    # importing "log_writer" function:S03
+    # importing "log_writer" function:S3
     try:
         from Backend.LogHandler.logwriter import log_writer
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '3', 'message' : str(error)}
 
-    # define folder and file path:S04
+    # define folder and file path:S4
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
@@ -33,7 +33,7 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '4', 'message' : str(error)}
 
-    # check if ".env" file is present:S05
+    # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
@@ -44,7 +44,7 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '5', 'message' : str(error)}
 
-    # load ".env" file into script:S06
+    # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
@@ -52,7 +52,7 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '6', 'message' : str(error)}
 
-    # define database connection parameter:S07
+    # define database connection parameter:S7
     try:
         database_connection_parameter = {
             "dbname" : str(environment_values.get('DATABASE_NAME')),
@@ -66,7 +66,7 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '7', 'message' : str(error)}
 
-    # check if "input_incident_data" table present inside database:S08
+    # check if "input_incident_data" table present inside database:S8
     try:
         input_incident_data_table_present_check_sql = '''
         SELECT EXISTS (
@@ -86,7 +86,7 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
         log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '8', 'message' : str(error)}
 
-    # check if "processed_incident_data" table present inside database:S09
+    # check if "processed_incident_data" table present inside database:S9
     try:
         processed_incident_data_table_present_check_sql = '''
         SELECT EXISTS (

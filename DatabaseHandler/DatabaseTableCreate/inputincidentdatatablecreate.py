@@ -1,12 +1,12 @@
 # define "input_incident_data_table_create" function
 def input_incident_data_table_create(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str) -> dict[str, str]:
-    # importing python module:S01
+    # importing python module:S1
     try:
         import psycopg2
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '1', 'message': str(error)}
 
-    # define connection params:S02
+    # define connection params:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -19,7 +19,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '2', 'message': str(error)}
 
-    # check if table exists:S03
+    # check if table exists:S3
     try:
         input_incident_data_table_present_sql = '''
         SELECT EXISTS (
@@ -35,7 +35,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '3', 'message': str(error)}
 
-    # create table:S04
+    # create table:S4
     try:
         input_incident_data_table_create_sql = f'''
         CREATE TABLE input_incident_data (
@@ -73,7 +73,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '4', 'message': str(error)}
 
-    # verify table creation:S05
+    # verify table creation:S5
     try:
         verify_sql = '''
         SELECT EXISTS (
@@ -89,7 +89,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '5', 'message': str(error)}
 
-    # trigger function:S06
+    # trigger function:S6
     try:
         trigger_function_sql = '''
         CREATE OR REPLACE FUNCTION input_incident_full_trigger_function()
@@ -130,7 +130,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '6', 'message': str(error)}
 
-    # trigger definition:S07
+    # trigger definition:S7
     try:
         trigger_definition_sql = '''
         DROP TRIGGER IF EXISTS trg_input_incident_data_before_ins_upd ON input_incident_data;

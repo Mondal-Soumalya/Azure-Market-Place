@@ -1,6 +1,6 @@
 # define "database_auto_init" function
 def database_auto_init() -> dict[str, str]: #type: ignore
-    # importing python module:S01
+    # importing python module:S1
     try:
         from pathlib import Path
         from dotenv import dotenv_values
@@ -10,13 +10,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '1', 'message' : str(error)}
 
-    # appending system path:S02
+    # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '2', 'message' : str(error)}
 
-    # define parent folder and file path:S03
+    # define parent folder and file path:S3
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
@@ -27,21 +27,21 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '3', 'message' : str(error)}
 
-    # check if ".env" file is present:S04
+    # check if ".env" file is present:S4
     try:
         if (not ((env_file_path.exists()) and (env_file_path.is_file()))):
             return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '4', 'message' : '".env" File Not Present'}
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '4', 'message' : str(error)}
 
-    # define all the files name:S05
+    # define all the files name:S5
     try:
         database_table_create_scripts_files = ['applicationlogtablecreate.py', 'botcataloguedetailstablecreate.py', 'submittedfiletablecreate.py', 'fileprocessstatustablecreate.py', 'skiprowdetailstablecreate.py', 'inputincidentdatatablecreate.py', 'processincidentdatatablecreate.py', 'tokencountdetailstablecreate.py']
         database_data_entry_files = ['botcatalougedataentry.py', 'BoT_Catalouge_Details.xlsx']
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '5', 'message' : str(error)}
 
-    # check all the files are present:S06
+    # check all the files are present:S6
     try:
         # checking "database_table_create" files
         for file_name in database_table_create_scripts_files:
@@ -54,7 +54,7 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : str(error)}
 
-    # load environment variables and admin credential:S07
+    # load environment variables and admin credential:S7
     try:
         environment_values = dotenv_values(env_file_path)
         db_name = str(environment_values.get('DATABASE_NAME'))
@@ -73,7 +73,7 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '7', 'message' : str(error)}
 
-    # check if database is present:S08
+    # check if database is present:S8
     try:
         database_existence_check_sql = '''
         SELECT EXISTS (
@@ -96,14 +96,14 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         database_cursor.close()
         database_connection.close()
 
-    # creating "application_log" table:S09
-    # importing "application_log_table_create" function:S09-A
+    # creating "application_log" table:S9
+    # importing "application_log_table_create" function:S9-A
     try:
         from DatabaseHandler.DatabaseTableCreate.applicationlogtablecreate import application_log_table_create
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '9-A', 'message' : str(error)}
 
-    # calling "application_log_table_create" function:S09-B
+    # calling "application_log_table_create" function:S9-B
     try:
         application_log_table_create_backend_response = application_log_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (application_log_table_create_backend_response == None):
@@ -114,7 +114,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(application_log_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '9-B', 'message' : str(error)}
-    #####################################
 
     # creating "bot_catalouge_details" table:S10
     # importing "bot_catalogue_details_table_create" function:S10-A
@@ -134,7 +133,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(bot_catalogue_details_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '10-B', 'message' : str(error)}
-    ############################################
 
     # creating "submitted_file_details" table:S11
     # importing "submitted_file_details_table_create" function:S11-A
@@ -154,7 +152,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(submitted_file_details_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '11-B', 'message' : str(error)}
-    #############################################
 
     # creating "file_process_status" table:S12
     # importing "file_process_status_table_create" function:S12-A
@@ -174,7 +171,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(file_process_status_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '12-B', 'message' : str(error)}
-    ##########################################
 
     # creating "skip_row_details" table:S13
     # importing "skip_row_details_table_create" function:S13-A
@@ -194,7 +190,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(skip_row_details_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '13-B', 'message' : str(error)}
-    #######################################
 
     # creating "input_incident_data" table:S14
     # importing "input_incident_data_table_create" function:S14-A
@@ -214,7 +209,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(input_incident_data_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '14-B', 'message' : str(error)}
-    ##########################################
 
     # creating "processed_incident_data" table:S15
     # importing "processed_incident_data_table_create" function:S15-A
@@ -234,7 +228,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(processed_incident_data_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '15-B', 'message' : str(error)}
-    ##############################################
 
     # creating "token_count_details" table:S16
     # importing "token_count_details_table_create" function:S16-A
@@ -254,7 +247,6 @@ def database_auto_init() -> dict[str, str]: #type: ignore
             print(f"SUCCESS - {str(token_count_details_table_create_backend_response['message'])}")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '16-B', 'message' : str(error)}
-    ##########################################
 
     # inserting data into "bot_catalogue_details" table:S17
     # importing "bot_catalogue_details_data_entry" function:S17-A

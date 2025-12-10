@@ -1,12 +1,12 @@
 # define "token_count_details_table_create" function
 def token_count_details_table_create(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str) -> dict[str, str]:
-    # importing python module:S01
+    # importing python module:S1
     try:
         import psycopg2
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '1', 'message': str(error)}
 
-    # define database connection parameter:S02
+    # define database connection parameter:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -19,7 +19,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '2', 'message': str(error)}
 
-    # check if table exists:S03
+    # check if table exists:S3
     try:
         token_count_details_table_present_check_sql = '''
         SELECT EXISTS (
@@ -35,7 +35,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '3', 'message': str(error)}
 
-    # create table:S04
+    # create table:S4
     try:
         token_count_details_table_create_sql = f'''
         CREATE TABLE token_count_details (
@@ -57,7 +57,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '4', 'message': str(error)}
 
-    # verify table creation:S05
+    # verify table creation:S5
     try:
         verify_sql = '''
         SELECT EXISTS (
@@ -73,7 +73,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '5', 'message': str(error)}
 
-    # trigger function:S06
+    # trigger function:S6
     try:
         trigger_function_sql = '''
         CREATE OR REPLACE FUNCTION sum_token_values()
@@ -119,7 +119,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '6', 'message': str(error)}
 
-    # trigger definition:S07
+    # trigger definition:S7
     try:
         trigger_definition_sql = '''
         DROP TRIGGER IF EXISTS trg_sum_token_values ON token_count_details;

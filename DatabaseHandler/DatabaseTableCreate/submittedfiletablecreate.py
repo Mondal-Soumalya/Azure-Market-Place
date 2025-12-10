@@ -1,12 +1,12 @@
 # define "submitted_file_details_table_create" function
 def submitted_file_details_table_create(db_name: str, db_user: str, db_password: str, db_host: str, db_port: str) -> dict[str, str]:
-    # importing python module:S01
+    # importing python module:S1
     try:
         import psycopg2
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '1', 'message': str(error)}
 
-    # define database connection parameter:S02
+    # define database connection parameter:S2
     try:
         database_connection_parameter = {
             "dbname": str(db_name),
@@ -19,7 +19,7 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '2', 'message': str(error)}
 
-    # check if "submitted_file_details" table already present:S03
+    # check if "submitted_file_details" table already present:S3
     try:
         submitted_file_details_table_present_sql = '''
         SELECT EXISTS (
@@ -35,7 +35,7 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '3', 'message': str(error)}
 
-    # execute table create query:S04
+    # execute table create query:S4
     try:
         submitted_file_details_table_create_sql = f'''
         CREATE TABLE submitted_file_details (
@@ -58,7 +58,7 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '4', 'message': str(error)}
 
-    # verify table created:S05
+    # verify table created:S5
     try:
         submitted_file_details_table_present_sql = '''
         SELECT EXISTS (
