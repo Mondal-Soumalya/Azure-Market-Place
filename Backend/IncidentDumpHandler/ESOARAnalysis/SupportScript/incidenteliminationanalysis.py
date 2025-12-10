@@ -1,5 +1,5 @@
 # define "incident_elimination_analysis" function
-def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_elimination_analysis() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -186,7 +186,6 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                iid.account_unique_id,
                 iid.ticket_number,
                 pid.opened_at,
                 pid.cmdb_ci,
@@ -201,22 +200,20 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 input_incident_data AS iid
             JOIN
                 processed_incident_data AS pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 7
+                iid.row_status = 7
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (str(account_unique_id), elimination_analysis_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (elimination_analysis_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     database_column_names = [database_field_name[0] for database_field_name in database_cursor.description]
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '14', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Elimination Analysis Process')
+                        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '14', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Elimination Analysis Process')
                     else:
-                        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '14', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Elimination Analysis Process')
+                        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '14', status = 'INFO', message = f'No New Rows Present For Elimination Analysis Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '14', status = 'ERROR', message = str(error))
@@ -232,7 +229,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 datetime(1970, 1, 1, tzinfo = timezone.utc)
             ]
             ticket_dataframe = pandas.DataFrame(to_be_processed_data, columns = database_column_names)
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Pandas Dataframe Created For Processing')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Pandas Dataframe Created For Processing')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '15', 'message' : str(error)}
@@ -243,7 +240,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
             ticket_dataframe['normalized_state'] = ticket_dataframe['state'].apply(normalize_text)
             # create "cancelled_ticket" column using inline regex
             ticket_dataframe['cancelled_ticket'] = ticket_dataframe['normalized_state'].apply(lambda x: 'Yes' if re.search(r'cancel', x, re.IGNORECASE) else 'No')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Cancelled Ticket Analysis''')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Cancelled Ticket Analysis')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '16', 'message' : str(error)}
@@ -280,8 +277,8 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
 
                 # push results back to main dataframe
                 ticket_dataframe.loc[connector_valid_df.index, 'connector_down'] = connector_valid_df['connector_down']
-            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'''For Account: "{account_unique_id}" Total {int((~ticket_dataframe['is_connector_valid']).sum())}-Rows Of Data Skipped For Connector Down Analysis''')
-            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'''For Account: "{account_unique_id}" Total {int(ticket_dataframe['is_connector_valid'].sum())}-Rows Of Data Processed For Connector Down Analysis''')
+            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int((~ticket_dataframe["is_connector_valid"]).sum())}-Rows Of Data Skipped For Connector Down Analysis')
+            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int(ticket_dataframe["is_connector_valid"].sum())}-Rows Of Data Processed For Connector Down Analysis')
         except Exception as error:
             log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='ERROR', message=str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '17', 'message': str(error)}
@@ -333,8 +330,8 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 )
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'flapping_event'] = valid_df['flapping_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int((~ticket_dataframe['is_flapping_valid']).sum())}-Rows Of Data Skipped For Flapping Event Analysis''')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int(ticket_dataframe['is_flapping_valid'].sum())}-Rows Of Data Processed For Flapping Event Analysis''')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_flapping_valid"]).sum())}-Rows Of Data Skipped For Flapping Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_flapping_valid"].sum())}-Rows Of Data Processed For Flapping Event Analysis')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '18', 'message': str(error)}
@@ -345,7 +342,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
             short_duration_ticket_buckets = {'0-5', '5-10'}
             # create "short_duration_ticket" column
             ticket_dataframe['short_duration_ticket'] = ticket_dataframe['ticket_mttr_minutes_bucket'].apply(lambda x: 'Yes' if x in short_duration_ticket_buckets else 'No')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Short Duration Ticket Analysis''')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Short Duration Ticket Analysis')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '19', 'message': str(error)}
@@ -382,8 +379,8 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 valid_df['sequence_event'] = ['Yes' if x > 1 else 'No' for x in sequence_event_counts_minute]
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'sequence_event'] = valid_df['sequence_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int((~ticket_dataframe['is_sequence_valis']).sum())}-Rows Of Data Skipped For Sequence Event Analysis''')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int(ticket_dataframe['is_sequence_valis'].sum())}-Rows Of Data Processed For Sequence Event Analysis''')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_sequence_valis"]).sum())}-Rows Of Data Skipped For Sequence Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_sequence_valis"].sum())}-Rows Of Data Processed For Sequence Event Analysis')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '20', 'message' : str(error)}
@@ -419,20 +416,19 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 valid_df['periodic_event'] = periodic_event_mask.apply(lambda x: 'Yes' if x else 'No')
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'periodic_event'] = valid_df['periodic_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int((~ticket_dataframe['is_periodic_valid']).sum())}-Rows Of Data Skipped For Periodic Event Analysis''')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'''For Account: "{account_unique_id}" Total {int(ticket_dataframe['is_periodic_valid'].sum())}-Rows Of Data Processed For Periodic Event Analysis''')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_periodic_valid"]).sum())}-Rows Of Data Skipped For Periodic Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_periodic_valid"].sum())}-Rows Of Data Processed For Periodic Event Analysis')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '21', 'message' : str(error)}
 
         # re-order column for data insertion:S22
         try:
-            ticket_dataframe = ticket_dataframe[['account_unique_id', 'ticket_number', 'cancelled_ticket', 'connector_down', 'flapping_event', 'short_duration_ticket', 'sequence_event', 'periodic_event']]
+            ticket_dataframe = ticket_dataframe[['ticket_number', 'cancelled_ticket', 'connector_down', 'flapping_event', 'short_duration_ticket', 'sequence_event', 'periodic_event']]
             for _, row in ticket_dataframe.iterrows():
                 total_count += 1
                 # appending data into "processed_data_insert_rows"
                 processed_data_insert_rows.append((
-                    row['account_unique_id'],
                     row['ticket_number'],
                     str(row['cancelled_ticket']),
                     str(row['connector_down']),
@@ -443,8 +439,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 ))
                 # appending data into "input_data_update_row"
                 input_data_update_row.append((
-                    row['account_unique_id'],
-                    row['ticket_number']
+                    row['ticket_number'],
                 ))
             # deleting pandas dataframe to free memory
             del ticket_dataframe
@@ -456,7 +451,6 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
         try:
             data_upsert_sql_for_processed_incident_data_table_sql = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 cancelled_ticket,
                 connector_down,
@@ -466,7 +460,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 periodic_event
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 cancelled_ticket        = EXCLUDED.cancelled_ticket,
                 connector_down          = EXCLUDED.connector_down,
@@ -478,7 +472,7 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table_sql, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '23', 'message': str(error)}
@@ -489,17 +483,16 @@ def incident_elimination_analysis(account_unique_id: str) -> dict[str, str]: #ty
             UPDATE input_incident_data AS t
             SET row_status = 8,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "8" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "8" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '24', 'message' : str(error)}
 
     # sending return message to main script:S24
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '24', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Elimination Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '24', 'message' : f'Total {total_count}-Rows Of Data Elimination Analysis Completed And Updated Into "input_incident_data" Table'}

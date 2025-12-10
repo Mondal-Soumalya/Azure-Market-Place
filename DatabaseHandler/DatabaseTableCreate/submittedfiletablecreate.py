@@ -41,7 +41,6 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
         CREATE TABLE submitted_file_details (
             id SERIAL PRIMARY KEY,
             file_unique_id VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(file_unique_id) = 6),
-            account_name VARCHAR(150) NOT NULL,
             file_submit_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             shared_file_name VARCHAR(150) NOT NULL,
             saved_file_name VARCHAR(150) NOT NULL,

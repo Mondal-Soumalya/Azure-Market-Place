@@ -1,5 +1,5 @@
 # define "incident_normalized_data" function
-def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_normalized_data() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -125,20 +125,19 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
         # fetching rows to for normalizing:S10
         try:
             fetch_to_be_process_data_sql = '''
-            SELECT "account_unique_id", "ticket_number", "cmdb_ci", "state", "priority", "category", "channel", "assignment_group", "parent_ticket", "assigned_to", "resolved_by"
+            SELECT "ticket_number", "cmdb_ci", "state", "priority", "category", "channel", "assignment_group", "parent_ticket", "assigned_to", "resolved_by"
             FROM input_incident_data
             WHERE "row_status" = 2
-            AND "account_unique_id" = %s
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (account_unique_id, normalize_data_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (normalize_data_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Normalized-Data', steps = '10', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Fetched For Data Normalization Process')
+                        log_writer(script_name = 'Incident-Normalized-Data', steps = '10', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Data Normalization Process')
                     else:
-                        log_writer(script_name = 'Incident-Normalized-Data', steps = '10', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Data Normalization Process')
+                        log_writer(script_name = 'Incident-Normalized-Data', steps = '10', status = 'INFO', message = f'No New Rows Present For Data Normalization Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Normalized-Data', steps = '10', status = 'ERROR', message = str(error))
@@ -147,15 +146,15 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
         # normalize "cmdb_ci", "state", "priority", "category", "channel", "assignment_group", "parent_ticket", "assigned_to", "resolved_by" columns:S11
         try:
             # define column index
-            cmdb_ci_index = 2
-            state_index = 3
-            priority_index = 4
-            category_index = 5
-            channel_index = 6
-            assignment_group_index = 7
-            parent_ticket_index = 8
-            assigned_to_index = 9
-            resolved_by_index = 10
+            cmdb_ci_index = 1
+            state_index = 2
+            priority_index = 3
+            category_index = 4
+            channel_index = 5
+            assignment_group_index = 6
+            parent_ticket_index = 7
+            assigned_to_index = 8
+            resolved_by_index = 9
 
             for i, data_row in enumerate(to_be_processed_data):
                 # convert tuple to list to modify
@@ -207,7 +206,7 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Normalized-Data', steps = '11', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows "state", "priority", "category", "assignment_group", "parent_ticket" Data Normalized')
+            log_writer(script_name = 'Incident-Normalized-Data', steps = '11', status = 'SUCCESS', message = f'For Account Total {int(len(to_be_processed_data))}-Rows "state", "priority", "category", "assignment_group", "parent_ticket" Data Normalized')
         except Exception as error:
             log_writer(script_name = 'Incident-Normalized-Data', steps = '11', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Normalized-Data', 'step': '11', 'message': str(error)}
@@ -218,22 +217,20 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0], # account_unique_id
-                    data_row[1], # ticket_number
-                    data_row[2], # cmdb_ci
-                    data_row[3], # state
-                    data_row[4], # priority
-                    data_row[5], # category
-                    data_row[6], # channel
-                    data_row[7], # assignment_group
-                    data_row[8], # parent_ticket
-                    data_row[9], # assigned_to
-                    data_row[10], # resolved_by
+                    data_row[0], # ticket_number
+                    data_row[1], # cmdb_ci
+                    data_row[2], # state
+                    data_row[3], # priority
+                    data_row[4], # category
+                    data_row[5], # channel
+                    data_row[6], # assignment_group
+                    data_row[7], # parent_ticket
+                    data_row[8], # assigned_to
+                    data_row[9], # resolved_by
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
-                    data_row[0], # account_unique_id
-                    data_row[1] # ticket_number
+                    data_row[0], # ticket_number
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-Normalized-Data', steps = '12', status = 'ERROR', message = str(error))
@@ -243,7 +240,6 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 cmdb_ci,
                 state,
@@ -256,7 +252,7 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
                 resolved_by
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 cmdb_ci          = EXCLUDED.cmdb_ci,
                 state            = EXCLUDED.state,
@@ -271,7 +267,7 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Normalized-Data', steps = '13', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Normalized-Data', steps = '13', status = 'SUCCESS', message = f'For Account Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Normalized-Data', steps = '13', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Normalized-Data', 'step' : '13', 'message' : str(error)}
@@ -282,18 +278,17 @@ def incident_normalized_data(account_unique_id: str) -> dict[str, str]: #type: i
             UPDATE input_incident_data AS t
             SET row_status = 3,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Normalized-Data', steps = '14', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "3" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Normalized-Data', steps = '14', status = 'SUCCESS', message = f'For Account Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "3" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Normalized-Data', steps = '14', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Normalized-Data', 'step' : '14', 'message' : str(error)}
 
     # sending return message to main script:S15
-    log_writer(script_name = 'Incident-Normalized-Data', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Normalized And Updated Into "input_incident_data" Table')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Normalized-Data', 'step' : '15', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Normalized And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Normalized-Data', steps = '15', status = 'SUCCESS', message = f'For Account Total {total_count}-Rows Of Data Normalized And Updated Into "input_incident_data" Table')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Normalized-Data', 'step' : '15', 'message' : f'For Account Total {total_count}-Rows Of Data Normalized And Updated Into "input_incident_data" Table'}

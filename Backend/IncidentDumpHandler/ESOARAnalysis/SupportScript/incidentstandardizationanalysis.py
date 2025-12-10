@@ -1,5 +1,5 @@
 # define "incident_standardization_analysis" function
-def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_standardization_analysis() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -138,7 +138,6 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                iid.account_unique_id,
                 iid.ticket_number,
                 pid.cmdb_ci,
                 pid.blank_ci
@@ -146,21 +145,19 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
                 input_incident_data iid
             JOIN
                 processed_incident_data pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 8
+                iid.row_status = 8
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (str(account_unique_id), standardization_analysis_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (standardization_analysis_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Standardization-Analysis', steps = '11', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Standardization Analysis Process')
+                        log_writer(script_name = 'Incident-Standardization-Analysis', steps = '11', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Standardization Analysis Process')
                     else:
-                        log_writer(script_name = 'Incident-Standardization-Analysis', steps = '11', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Standardization Analysis Process')
+                        log_writer(script_name = 'Incident-Standardization-Analysis', steps = '11', status = 'INFO', message = f'No New Rows Present For Standardization Analysis Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Standardization-Analysis', steps = '11', status = 'ERROR', message = str(error))
@@ -169,8 +166,8 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
         # generating "blank_ci" view:S12
         try:
             # define column index
-            cmdb_ci_index = 2
-            blank_ci_index = 3
+            cmdb_ci_index = 1
+            blank_ci_index = 2
 
             for i, data_row in enumerate(to_be_processed_data):
                 # convert tuple to list to modify
@@ -187,7 +184,7 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Standardization-Analysis', steps = '12', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Standardization Analysis Complete')
+            log_writer(script_name = 'Incident-Standardization-Analysis', steps = '12', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Standardization Analysis Complete')
         except Exception as error:
             log_writer(script_name = 'Incident-Standardization-Analysis', steps = '12', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Standardization-Analysis', 'step' : '12', 'message' : str(error)}
@@ -198,14 +195,12 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0],  # account_unique_id
-                    data_row[1],  # ticket_number
-                    data_row[3],  # blank_ci
+                    data_row[0],  # ticket_number
+                    data_row[2],  # blank_ci
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
-                    data_row[0], # account_unique_id
-                    data_row[1] # ticket_number
+                    data_row[0], # ticket_number
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-Standardization-Analysis', steps = '13', status = 'ERROR', message = str(error))
@@ -215,19 +210,18 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 blank_ci
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 blank_ci = EXCLUDED.blank_ci;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Standardization-Analysis', steps = '14', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Standardization-Analysis', steps = '14', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Standardization-Analysis', steps = '14', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Standardization-Analysis', 'step' : '14', 'message' : str(error)}
@@ -238,17 +232,16 @@ def incident_standardization_analysis (account_unique_id: str) -> dict[str, str]
             UPDATE input_incident_data AS t
             SET row_status = 9,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Standardization-Analysis', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "9" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Standardization-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "9" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Standardization-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Standardization-Analysis', 'step' : '15', 'message' : str(error)}
 
     # sending return message to main script:S15
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Standardization-Analysis', 'step' : '15', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Standardization Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Standardization-Analysis', 'step' : '15', 'message' : f'Total {total_count}-Rows Of Data Standardization Analysis Completed And Updated Into "input_incident_data" Table'}

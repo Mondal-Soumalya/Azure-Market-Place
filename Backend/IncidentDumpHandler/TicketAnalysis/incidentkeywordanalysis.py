@@ -1,5 +1,5 @@
 # define "incident_keyword_analysis" function
-def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_keyword_analysis() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -268,12 +268,11 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 # define "process_single_row" helper function for concurrent request
                 async def process_single_row(row):
                     input_text = (
-                        f"account_unique_id: {row[0]}\n"
-                        f"ticket_number: {row[1]}\n"
-                        f"short_description: {clean_text(str(row[2] or ''))}\n"
-                        f"description: {clean_text(str(row[3] or ''))}\n"
-                        f"work_notes: {clean_text(str(row[4] or ''))}\n"
-                        f"resolution_notes: {clean_text(str(row[5] or ''))}"
+                        f"ticket_number: {row[0]}\n"
+                        f"short_description: {clean_text(str(row[1] or ''))}\n"
+                        f"description: {clean_text(str(row[2] or ''))}\n"
+                        f"work_notes: {clean_text(str(row[3] or ''))}\n"
+                        f"resolution_notes: {clean_text(str(row[4] or ''))}"
                     )
                     # creating "input_text" tokenizer
                     if tokenizer:
@@ -286,16 +285,15 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 # calling async function for row processing
                 async_results = await asyncio.gather(*(process_single_row(row) for row in rows))
 
-                # skip the row if either "account_unique_id" or "ticket_number" is missing
+                # skip the row if "ticket_number" is missing
                 filtered_results = []
                 # loop through all the async_results
                 for async_row in async_results:
                     account_unique_id, ticket_number, k1, k2, prompt_token, output_token = async_row
-                    if ((account_unique_id is None) or (ticket_number is None)):
+                    if (ticket_number is None):
                         continue
                     else:
                         filter_async_dict = {
-                            'account_unique_id' : account_unique_id,
                             'ticket_number' : ticket_number,
                             'K1' : k1,
                             'K2' : k2,
@@ -327,8 +325,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                iid.account_unique_id,
-                iid.ticket_number,
+                pid.ticket_number,
                 pid.short_description,
                 pid.description,
                 pid.work_notes,
@@ -337,22 +334,20 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 input_incident_data iid
             JOIN
                 processed_incident_data pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 4
+                iid.row_status = 4
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (account_unique_id, keyword_analysis_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (keyword_analysis_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) == 0):
-                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Keyword Analysis')
+                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'No New Rows Present For Keyword Analysis')
                         break
                     # check if batch is same as previous
-                    current_batch_ids = {(row[0], row[1]) for row in to_be_processed_data}
+                    current_batch_ids = {(row[0],) for row in to_be_processed_data}
                     if (current_batch_ids == previous_batch_ids):
                         same_batch_counter += 1
                         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'Same Batch Fetched {same_batch_counter} Times For Keyword Analysis')
@@ -362,7 +357,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                     else:
                         same_batch_counter = 0
                         previous_batch_ids = current_batch_ids
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {len(to_be_processed_data)}-Rows Fetched For Keyword Analysis Process')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Fetched For Keyword Analysis Process')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '18', 'message' : str(error)}
@@ -380,7 +375,6 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
             for data_row in final_result:
                 # creating tuple for keyword insertion
                 processed_data_insert_rows.append((
-                    data_row['account_unique_id'],
                     data_row['ticket_number'],
                     str((incident_keyword_alias_map.get((data_row.get('K1') or '').lower().strip(), data_row.get('K1') or '')).title()),
                     str((incident_keyword_alias_map.get((data_row.get('K2') or '').lower().strip(), data_row.get('K2') or '')).title())
@@ -388,7 +382,6 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
 
                 # creating tuple for token insertion
                 token_details_insert_rows.append((
-                    data_row['account_unique_id'],
                     data_row['ticket_number'],
                     int(data_row['prompt_tokens']),
                     int(data_row['completion_tokens']),
@@ -398,8 +391,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
 
                 # creating tuple for input table update
                 input_data_update_rows.append((
-                    data_row['account_unique_id'],
-                    data_row['ticket_number']
+                    data_row['ticket_number'],
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '20', status = 'ERROR', message = str(error))
@@ -409,13 +401,12 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 keywords_1,
                 keywords_2
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 keywords_1  = EXCLUDED.keywords_1,
                 keywords_2  = EXCLUDED.keywords_2;'''
@@ -423,7 +414,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {len(to_be_processed_data)}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '21', 'message' : str(error)}
@@ -432,7 +423,6 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
         try:
             token_upsert_sql = '''
             INSERT INTO token_count_details (
-                account_unique_id,
                 ticket_number,
                 prompt_token,
                 output_token,
@@ -440,7 +430,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 model_version
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 prompt_token    = token_count_details.prompt_token + EXCLUDED.prompt_token,
                 output_token    = token_count_details.output_token + EXCLUDED.output_token,
@@ -450,7 +440,7 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, token_upsert_sql, token_details_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {len(to_be_processed_data)}-Rows Upserted Into "token_count_details" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "token_count_details" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '22', 'message' : str(error)}
@@ -461,18 +451,17 @@ def incident_keyword_analysis(account_unique_id: str) -> dict[str, str]: #type: 
             UPDATE input_incident_data AS t
             SET row_status = 5,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {len(to_be_processed_data)}-Rows Updated "row_status" To "5" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Updated "row_status" To "5" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '23', 'message' : str(error)}
 
     # sending return message to main script:S24
-    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '24', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '24', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '24', 'message' : f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table'}

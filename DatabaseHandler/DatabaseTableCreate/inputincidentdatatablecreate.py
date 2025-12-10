@@ -40,7 +40,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
         input_incident_data_table_create_sql = f'''
         CREATE TABLE input_incident_data (
             id SERIAL PRIMARY KEY,
-            ticket_number VARCHAR(20) NOT NULL,
+            ticket_number VARCHAR(20) UNIQUE NOT NULL,
             ticket_type VARCHAR(50) NOT NULL DEFAULT 'Incident',
             row_inserted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             row_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -63,8 +63,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
             description TEXT,
             work_notes TEXT,
             resolution_notes TEXT,
-            row_status INTEGER NOT NULL DEFAULT 1 CHECK (row_status IN (1,2,3,4,5,6,7,8,9,10,11)),
-            CONSTRAINT unique_ticket_number UNIQUE (ticket_number)
+            row_status INTEGER NOT NULL DEFAULT 1 CHECK (row_status IN (1,2,3,4,5,6,7,8,9,10,11))
         );
         ALTER TABLE input_incident_data OWNER TO {table_owner};'''
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore

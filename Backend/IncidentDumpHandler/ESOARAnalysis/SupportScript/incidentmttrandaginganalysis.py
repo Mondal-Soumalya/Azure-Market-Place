@@ -1,5 +1,5 @@
 # define "incident_mttr_aging_analysis" function
-def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -160,7 +160,6 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                pid.account_unique_id,
                 pid.ticket_number,
                 pid.opened_at,
                 pid.resolved_at,
@@ -178,21 +177,19 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
                 input_incident_data iid
             JOIN
                 processed_incident_data pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 6
+                iid.row_status = 6
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (str(account_unique_id), mttr_aging_analysis_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (mttr_aging_analysis_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '12', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Fetched For Incident-MTTR-Aging-Analysis Process')
+                        log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '12', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Incident-MTTR-Aging-Analysis Process')
                     else:
-                        log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '12', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Incident-MTTR-Aging-Analysis Process')
+                        log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '12', status = 'INFO', message = f'No New Rows Present For Incident-MTTR-Aging-Analysis Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '12', status = 'ERROR', message = str(error))
@@ -203,18 +200,18 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
             # define local_time_zone
             local_tz = datetime.now().astimezone().tzinfo
             # define column index
-            opened_at_index = 2
-            resolved_at_index = 3
-            ticket_mttr_days_index = 4
-            ticket_mttr_hours_index = 5
-            ticket_mttr_minutes_index = 6
-            ticket_mttr_seconds_index = 7
-            ticket_mttr_minutes_bucket_index = 8
-            ticket_aging_days_index = 9
-            ticket_aging_hours_index = 10
-            ticket_aging_minutes_index = 11
-            ticket_aging_seconds_index = 12
-            ticket_aging_minutes_bucket_index = 13
+            opened_at_index = 1
+            resolved_at_index = 2
+            ticket_mttr_days_index = 3
+            ticket_mttr_hours_index = 4
+            ticket_mttr_minutes_index = 5
+            ticket_mttr_seconds_index = 6
+            ticket_mttr_minutes_bucket_index = 7
+            ticket_aging_days_index = 8
+            ticket_aging_hours_index = 9
+            ticket_aging_minutes_index = 10
+            ticket_aging_seconds_index = 11
+            ticket_aging_minutes_bucket_index = 12
 
             # loop through all the rows
             for i, data_row in enumerate(to_be_processed_data):
@@ -281,7 +278,7 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
 
                     # replace modified row
                     to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '13', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data "MTTR" And "Aging" Analysis Completed')
+            log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '13', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data "MTTR" And "Aging" Analysis Completed')
         except Exception as error:
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '13', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-MTTR-Aging-Analysis', 'step': '13', 'message': str(error)}
@@ -292,23 +289,21 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0], # account_unique_id
-                    data_row[1], # ticket_number
-                    data_row[4], # ticket_mttr_days
-                    data_row[5], # ticket_mtrr_hours
-                    data_row[6], # ticket_mttr_minutes
-                    data_row[7], # ticket_mttr_seconds
-                    data_row[8], # ticket_mttr_minutes_bucket
-                    data_row[9], # ticket_aging_days
-                    data_row[10], # ticket_aging_hours
-                    data_row[11], # ticket_aging_minutes
-                    data_row[12], # ticket_aging_seconds
-                    data_row[13] # ticket_aging_minutes_bucket
+                    data_row[0], # ticket_number
+                    data_row[3], # ticket_mttr_days
+                    data_row[4], # ticket_mtrr_hours
+                    data_row[5], # ticket_mttr_minutes
+                    data_row[6], # ticket_mttr_seconds
+                    data_row[7], # ticket_mttr_minutes_bucket
+                    data_row[8], # ticket_aging_days
+                    data_row[9], # ticket_aging_hours
+                    data_row[10], # ticket_aging_minutes
+                    data_row[11], # ticket_aging_seconds
+                    data_row[12] # ticket_aging_minutes_bucket
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
-                    data_row[0], # account_unique_id
-                    data_row[1] # ticket_number
+                    data_row[0], # ticket_number
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '14', status = 'ERROR', message = str(error))
@@ -318,7 +313,6 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 ticket_mttr_days,
                 ticket_mttr_hours,
@@ -332,7 +326,7 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
                 ticket_aging_minutes_bucket
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 ticket_mttr_days            = EXCLUDED.ticket_mttr_days,
                 ticket_mttr_hours           = EXCLUDED.ticket_mttr_hours,
@@ -348,7 +342,7 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '15', 'message' : str(error)}
@@ -359,18 +353,17 @@ def incident_mttr_aging_analysis(account_unique_id: str) -> dict[str, str]: #typ
             UPDATE input_incident_data AS t
             SET row_status = 7,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '16', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "7" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "7" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '16', 'message' : str(error)}
 
     # sending return message to main script:S17
-    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '17', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {skipped_rows}-Rows Of Data MTTR And Aging Analysis Skipped')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '17', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data MTTR And Aging Analysis Completed And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-MTTR-Aging-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {skipped_rows}-Rows Of Data MTTR And Aging Analysis Skipped')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-MTTR-Aging-Analysis', 'step' : '17', 'message' : f'Total {total_count}-Rows Of Data MTTR And Aging Analysis Completed And Updated Into "input_incident_data" Table'}

@@ -1,6 +1,5 @@
 # define "incident_esoar_process" function
-# def incident_esoar_process(account_unique_id: str, ticket_number: str, ticket_sys_id: str) -> dict[str, str]: #type: ignore
-def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     # define constant
     MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = False
     ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
@@ -103,9 +102,9 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
     # calling "incident_mttr_aging_analysis" function:S09-B
     try:
         mttr_aging_analysis_process_start_time = time.time()
-        mttr_aging_analysis_backend_response = incident_mttr_aging_analysis(account_unique_id = str(account_unique_id))
+        mttr_aging_analysis_backend_response = incident_mttr_aging_analysis()
         if (mttr_aging_analysis_backend_response != None):
-            log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'INFO', message = f'For Account: "{account_unique_id}" MTTR And Aging Backend Process Response Generate')
+            log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'INFO', message = f'MTTR And Aging Backend Process Response Generate')
         mttr_aging_analysis_process_end_time = time.time()
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'ERROR', message = str(error))
@@ -140,25 +139,11 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                         database_connection.rollback()
-                        return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : f'For Account: "{account_unique_id}" MTTR Analysis Process Not Completed'}
+                        return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : f'MTTR Analysis Process Not Completed'}
                     else:
                         MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" MTTR Analysis Process Completed')
-            # elapsed_seconds = int((mttr_aging_analysis_process_end_time - mttr_aging_analysis_process_start_time) % 60) #type: ignore
-            # elapsed_minutes = int(((mttr_aging_analysis_process_end_time - mttr_aging_analysis_process_start_time) % 3600) // 60) #type: ignore
-            # elapsed_hours = int((mttr_aging_analysis_process_end_time - mttr_aging_analysis_process_start_time) // 3600) #type: ignore
-            # # define servicenow worknotes
-            # work_notes = '~' * 33 + ' Step : 7 [MTTR And Aging Analysis] ' + '~' * 33 + '\n\n• Worknotes Updated By : PRiSM Analytics Tool\n• Completed Process : MTTR And Aging Analysis\n• Upcoming Procss : Elimination Analysis' + '\n• Duration of Process Execution :' + f'\n- Hours : {elapsed_hours}' + f'\n- Minutes : {elapsed_minutes}' + f'\n- Seconds : {elapsed_seconds}'
-            # # calling "create_worknotes" function
-            # mttr_aging_analysis_create_worknotes_backend_response = create_worknotes(work_notes = str(work_notes), ticket_number = str(ticket_number), ticket_sys_id = str(ticket_sys_id))
-            # # check the response
-            # if (((mttr_aging_analysis_create_worknotes_backend_response) != None) and (str(mttr_aging_analysis_create_worknotes_backend_response['status']).lower() == 'success')):
-            #     MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = True
-            #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" MTTR And Aging Process Completed And Worknotes Updated Into SerivceNow')
-            # else:
-            #     MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = False
-            #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" MTTR And Aging Process Completed But Worknotes Not Updated In ServiceNow')
+                        log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'SUCCESS', message = f'MTTR Analysis Process Completed')
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : str(error)}
@@ -176,9 +161,9 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
         # calling "incident_elimination_analysis" function:S10-B
         try:
             elimination_analysis_process_start_time = time.time()
-            elimination_analysis_backend_process = incident_elimination_analysis(account_unique_id = str(account_unique_id))
+            elimination_analysis_backend_process = incident_elimination_analysis()
             if (elimination_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Elimination Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'INFO', message = f'Elimination Analysis Backend Process Response Generate')
             elimination_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'ERROR', message = str(error))
@@ -213,25 +198,11 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : f'For Account: "{account_unique_id}" Elimination Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : f'Elimination Analysis Process Not Completed'}
                         else:
                             ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Elimination Analysis Process Completed')
-                # elapsed_seconds = int((elimination_analysis_process_end_time - elimination_analysis_process_start_time) % 60) #type: ignore
-                # elapsed_minutes = int(((elimination_analysis_process_end_time - elimination_analysis_process_start_time) % 3600) // 60) #type: ignore
-                # elapsed_hours = int((elimination_analysis_process_end_time - elimination_analysis_process_start_time) // 3600) #type: ignore
-                # # define servicenow worknotes
-                # work_notes = '~' * 35 + ' Step : 8 [Elimination Analysis] ' + '~' * 34 + '\n\n• Worknotes Updated By : PRiSM Analytics Tool\n• Completed Process : Elimination Analysis\n• Upcoming Procss : Standardization Analysis' + '\n• Duration of Process Execution :' + f'\n- Hours : {elapsed_hours}' + f'\n- Minutes : {elapsed_minutes}' + f'\n- Seconds : {elapsed_seconds}'
-                # # calling "create_worknotes" function
-                # mttr_aging_analysis_create_worknotes_backend_response = create_worknotes(work_notes = str(work_notes), ticket_number = str(ticket_number), ticket_sys_id = str(ticket_sys_id))
-                # # check the response
-                # if (((mttr_aging_analysis_create_worknotes_backend_response) != None) and (str(mttr_aging_analysis_create_worknotes_backend_response['status']).lower() == 'success')):
-                #     ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Elimination Analysis Process Completed And Worknotes Updated Into SerivceNow')
-                # else:
-                #     ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Elimination Analysis Process Completed But Worknotes Not Updated In ServiceNow')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'SUCCESS', message = f'Elimination Analysis Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : str(error)}
@@ -249,9 +220,9 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
         # calling "incident_standardization_analysis" function:S11-B
         try:
             standardization_analysis_process_start_time = time.time()
-            standardization_analysis_backend_process = incident_standardization_analysis(account_unique_id = str(account_unique_id))
+            standardization_analysis_backend_process = incident_standardization_analysis()
             if (standardization_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Standardization Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'INFO', message = f'Standardization Analysis Backend Process Response Generate')
             standardization_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'ERROR', message = str(error))
@@ -286,25 +257,11 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : f'For Account: "{account_unique_id}" Standardization Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : f'Standardization Analysis Process Not Completed'}
                         else:
                             STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Standardization Analysis Process Completed')
-                # elapsed_seconds = int((standardization_analysis_process_end_time - standardization_analysis_process_start_time) % 60) #type: ignore
-                # elapsed_minutes = int(((standardization_analysis_process_end_time - standardization_analysis_process_start_time) % 3600) // 60) #type: ignore
-                # elapsed_hours = int((standardization_analysis_process_end_time - standardization_analysis_process_start_time) // 3600) #type: ignore
-                # # define servicenow worknotes
-                # work_notes = '~' * 34 + ' Step : 9 [Standardization Analysis] ' + '~' * 34 + '\n\n• Worknotes Updated By : PRiSM Analytics Tool\n• Completed Process : Standardization Analysis\n• Upcoming Procss : Optimization Analysis' + '\n• Duration of Process Execution :' + f'\n- Hours : {elapsed_hours}' + f'\n- Minutes : {elapsed_minutes}' + f'\n- Seconds : {elapsed_seconds}'
-                # # calling "create_worknotes" function
-                # standardization_analysis_create_worknotes_backend_process = create_worknotes(work_notes = str(work_notes), ticket_number = str(ticket_number), ticket_sys_id = str(ticket_sys_id))
-                # # check the response
-                # if (((standardization_analysis_create_worknotes_backend_process) != None) and (str(standardization_analysis_create_worknotes_backend_process['status']).lower() == 'success')):
-                #     STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Standardization Analysis Process Completed And Worknotes Updated Into SerivceNow')
-                # else:
-                #     STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Standardization Analysis Process Completed But Worknotes Not Updated In ServiceNow')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'SUCCESS', message = f'Standardization Analysis Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : str(error)}
@@ -322,9 +279,9 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
         # calling "incident_optimization_analysis" function:S12-B
         try:
             optimization_analysis_process_start_time = time.time()
-            optimization_analysis_backend_process = incident_optimization_analysis(account_unique_id = str(account_unique_id))
+            optimization_analysis_backend_process = incident_optimization_analysis()
             if (optimization_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Optimization Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'INFO', message = f'Optimization Analysis Backend Process Response Generate')
             optimization_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'ERROR', message = str(error))
@@ -359,25 +316,11 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : f'For Account: "{account_unique_id}" Optimization Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : f'Optimization Analysis Process Not Completed'}
                         else:
                             OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Optimization Analysis Process Completed')
-                # elapsed_seconds = int((optimization_analysis_process_end_time - optimization_analysis_process_start_time) % 60) #type: ignore
-                # elapsed_minutes = int(((optimization_analysis_process_end_time - optimization_analysis_process_start_time) % 3600) // 60) #type: ignore
-                # elapsed_hours = int((optimization_analysis_process_end_time - optimization_analysis_process_start_time) // 3600) #type: ignore
-                # # define servicenow worknotes
-                # work_notes = '~' * 35 + ' Step : 10 [Optimization Analysis] ' + '~' * 35 + '\n\n• Worknotes Updated By : PRiSM Analytics Tool\n• Completed Process : Optimization Analysis\n• Upcoming Procss : Final Category Analysis' + '\n• Duration of Process Execution :' + f'\n- Hours : {elapsed_hours}' + f'\n- Minutes : {elapsed_minutes}' + f'\n- Seconds : {elapsed_seconds}'
-                # # calling "create_worknotes" function
-                # optimization_analysis_create_worknotes_backend_process = create_worknotes(work_notes = str(work_notes), ticket_number = str(ticket_number), ticket_sys_id = str(ticket_sys_id))
-                # # check the response
-                # if (((optimization_analysis_create_worknotes_backend_process) != None) and (str(optimization_analysis_create_worknotes_backend_process['status']).lower() == 'success')):
-                #     OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Optimization Analysis Process Completed And Worknotes Updated Into SerivceNow')
-                # else:
-                #     OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Optimization Analysis Process Completed But Worknotes Not Updated In ServiceNow')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'SUCCESS', message = f'Optimization Analysis Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : str(error)}
@@ -395,9 +338,9 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
         # calling "incident_final_category_analysis" function:S13-B
         try:
             final_category_analysis_process_start_time = time.time()
-            final_category_analysis_backend_process = incident_final_category_analysis(account_unique_id = str(account_unique_id))
+            final_category_analysis_backend_process = incident_final_category_analysis()
             if (final_category_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Final Categroy Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'INFO', message = f'Final Categroy Analysis Backend Process Response Generate')
             final_category_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'ERROR', message = str(error))
@@ -430,25 +373,11 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'For Account: "{account_unique_id}" Final Category Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Not Completed'}
                         else:
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Final Category Analysis Process Completed')
-                            return {'status' : 'SUCCESS', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'For Account: "{account_unique_id}" Final Category Analysis Process Completed'}
-                # elapsed_seconds = int((final_category_analysis_process_end_time - final_category_analysis_process_start_time) % 60) #type: ignore
-                # elapsed_minutes = int(((final_category_analysis_process_end_time - final_category_analysis_process_start_time) % 3600) // 60) #type: ignore
-                # elapsed_hours = int((final_category_analysis_process_end_time - final_category_analysis_process_start_time) // 3600) #type: ignore
-                # # define servicenow worknotes
-                # work_notes = '~' * 34 + ' Step : 11 [Final Categroy Analysis] ' + '~' * 34 + '\n\n• Worknotes Updated By : PRiSM Analytics Tool\n• Completed Process : Final Categroy Analysis' + '\n• Duration of Process Execution :' + f'\n- Hours : {elapsed_hours}' + f'\n- Minutes : {elapsed_minutes}' + f'\n- Seconds : {elapsed_seconds}'
-                # # calling "create_worknotes" function
-                # final_category_analysis_create_worknotes_backend_process = create_worknotes(work_notes = str(work_notes), ticket_number = str(ticket_number), ticket_sys_id = str(ticket_sys_id))
-                # # check the response
-                # if (((final_category_analysis_create_worknotes_backend_process) != None) and (str(final_category_analysis_create_worknotes_backend_process['status']).lower() == 'success')):
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Final Categroy Analysis Process Completed And Worknotes Updated Into SerivceNow')
-                #     return {'status' : 'SUCCESS', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'For Account: "{account_unique_id}" Final Category Analysis Process Completed'}
-                # else:
-                #     log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Final Categroy Analysis Process Completed But Worknotes Not Updated In ServiceNow')
-                #     return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'For Account: "{account_unique_id}" Final Category Analysis Process Not Completed'}
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'SUCCESS', message = f'Final Category Analysis Process Completed')
+                            return {'status' : 'SUCCESS', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Completed'}
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : str(error)}

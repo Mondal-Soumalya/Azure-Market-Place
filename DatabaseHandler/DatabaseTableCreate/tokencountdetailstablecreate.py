@@ -84,9 +84,8 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
                 NEW.ticket_number := UPPER(TRIM(NEW.ticket_number));
             END IF;
 
-            -- Allow rows only if ticket exists in input_incident_data OR input_sd_data
+            -- Allow rows only if ticket exists in input_incident_data
             IF NOT EXISTS (SELECT 1 FROM input_incident_data WHERE ticket_number = NEW.ticket_number)
-                AND NOT EXISTS (SELECT 1 FROM input_sd_data WHERE ticket_number = NEW.ticket_number)
             THEN
                 RETURN NULL; -- Skip insertion
             END IF;

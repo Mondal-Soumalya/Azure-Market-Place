@@ -1,5 +1,5 @@
 # define "incident_final_category_analysis" function
-def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_final_category_analysis() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -182,7 +182,6 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                iid.account_unique_id,
                 iid.ticket_number,
                 pid.state,
                 pid.assignment_group,
@@ -210,21 +209,19 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
                 input_incident_data AS iid
             JOIN
                 processed_incident_data AS pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 10
+                iid.row_status = 10
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (str(account_unique_id), final_category_analysis_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (final_category_analysis_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '14', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Final Category Analysis Process')
+                        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '14', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Fetched For Final Category Analysis Process')
                     else:
-                        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '14', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Final Category Analysis Process')
+                        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '14', status = 'INFO', message = f'No New Rows Present For Final Category Analysis Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '14', status = 'ERROR', message = str(error))
@@ -233,8 +230,8 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         # generating "assignment_group_category" view:S15
         try:
             # define column index
-            assignment_group_index = 3
-            assignment_group_category_index = 4
+            assignment_group_index = 2
+            assignment_group_category_index = 3
 
             # loop through all the rows
             for i, data_row in enumerate(to_be_processed_data):
@@ -258,7 +255,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Assignment Group Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Assignment Group Category Processed')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '15', 'message' : str(error)}
@@ -266,8 +263,8 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         # generating "resolved_type" view:S16
         try:
             # define column index
-            resolved_by_index = 6
-            resolved_type_index = 7
+            resolved_by_index = 5
+            resolved_type_index = 6
 
             # lopp through all the data
             for i, data_row in enumerate(to_be_processed_data):
@@ -287,7 +284,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Resolved Type Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Resolved Type Processed')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '16', 'message' : str(error)}
@@ -295,10 +292,10 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         # generating "autoheal_category" view:S17
         try:
             # define column index
-            state_index = 2
-            assigned_to_index = 5
-            short_description_index = 8
-            autoheal_category_index = 21
+            state_index = 1
+            assigned_to_index = 4
+            short_description_index = 7
+            autoheal_category_index = 20
 
             # loop through all the rows
             for i, data_row in enumerate(to_be_processed_data):
@@ -325,7 +322,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Autoheal Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Autoheal Category Processed')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '17', 'message' : str(error)}
@@ -333,18 +330,18 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         # generating "eso_analysis_category" view:S18
         try:
             # define column indexes
-            cancelled_ticket_index = 10
-            conector_down_index = 11
-            flapping_event_index = 12
-            short_duration_ticket_index = 13
-            sequence_event_index = 14
-            periodic_event_index = 15
-            blank_ci_index = 16
-            parent_child_event_index = 17
-            duplicate_event_index = 18
-            deduplicate_event_index = 19
-            correlated_event_index = 20
-            eso_analysis_index = 22
+            cancelled_ticket_index = 9
+            conector_down_index = 10
+            flapping_event_index = 11
+            short_duration_ticket_index = 12
+            sequence_event_index = 13
+            periodic_event_index = 14
+            blank_ci_index = 15
+            parent_child_event_index = 16
+            duplicate_event_index = 17
+            deduplicate_event_index = 18
+            correlated_event_index = 19
+            eso_analysis_index = 21
 
             # mapping column names to indexes for cleaner iteration
             eso_columns_mapping = {
@@ -380,7 +377,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data ESO-Analysis Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data ESO-Analysis Processed')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '18', 'message' : str(error)}
@@ -388,8 +385,8 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         # generating "final_category" view:S19
         try:
             # define column indexes
-            bot_availability_index = 9
-            final_category_index = 23
+            bot_availability_index = 8
+            final_category_index = 22
 
             # define required sets for "elimination" and "standardization" columns
             elimination_columns = [
@@ -423,7 +420,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '19', 'message' : str(error)}
@@ -434,18 +431,16 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0], # account_unique_id
-                    data_row[1], # ticket_number
-                    data_row[4], # assignment_group_category
-                    data_row[7], # resolved_type
-                    data_row[21], # autoheal_category
-                    data_row[22], # eso_analysis
-                    data_row[23] # final_category
+                    data_row[0], # ticket_number
+                    data_row[3], # assignment_group_category
+                    data_row[6], # resolved_type
+                    data_row[20], # autoheal_category
+                    data_row[21], # eso_analysis
+                    data_row[22] # final_category
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
-                    data_row[0], # account_unique_id
-                    data_row[1] # ticket_number
+                    data_row[0], # ticket_number
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '20', status = 'ERROR', message = str(error))
@@ -455,7 +450,6 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 assignment_group_category,
                 resolved_type,
@@ -464,7 +458,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
                 final_category
             )
             VALUES %s
-            ON CONFLICT (account_unique_id, ticket_number)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 assignment_group_category   = EXCLUDED.assignment_group_category,
                 resolved_type               = EXCLUDED.resolved_type,
@@ -475,7 +469,7 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '21', 'message' : str(error)}
@@ -486,17 +480,16 @@ def incident_final_category_analysis(account_unique_id: str) -> dict[str, str]: 
             UPDATE input_incident_data AS t
             SET row_status = 11,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : str(error)}
 
     # sending return message to main script:S22
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : f'Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table'}

@@ -1,5 +1,5 @@
 # define "incident_automation_mapping" function
-def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type: ignore
+def incident_automation_mapping() -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -210,11 +210,10 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
         processed_data_insert_rows = []
         input_data_update_rows = []
 
-        # fetching "account_unique_id", "ticket_number", "keywords_1", "keywords_2", "automation_probability", "bot_availability", "bid" from "processed_incident_data" table:S15
+        # fetching "ticket_number", "keywords_1", "keywords_2", "automation_probability", "bot_availability", "bid" from "processed_incident_data" table:S15
         try:
             fetch_to_be_process_data_sql = '''
             SELECT
-                iid.account_unique_id,
                 iid.ticket_number,
                 pid.keywords_1,
                 pid.keywords_2,
@@ -225,21 +224,19 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
                 input_incident_data iid
             JOIN
                 processed_incident_data pid
-                ON iid.account_unique_id = pid.account_unique_id
-                AND iid.ticket_number = pid.ticket_number
+                ON iid.ticket_number = pid.ticket_number
             WHERE
-                iid.account_unique_id = %s
-                AND iid.row_status = 5
+                iid.row_status = 5
             LIMIT %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: # type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_to_be_process_data_sql, (str(account_unique_id), automation_mapping_rows_limiter))
+                    database_cursor.execute(fetch_to_be_process_data_sql, (automation_mapping_rows_limiter,))
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Automation-Mapping', steps = '15', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Fetched For Incident-Automation-Mapping Process')
+                        log_writer(script_name = 'Incident-Automation-Mapping', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Incident-Automation-Mapping Process')
                     else:
-                        log_writer(script_name = 'Incident-Automation-Mapping', steps = '15', status = 'INFO', message = f'For Account: "{account_unique_id}" No New Rows Present For Incident-Automation-Mapping Process')
+                        log_writer(script_name = 'Incident-Automation-Mapping', steps = '15', status = 'INFO', message = f'No New Rows Present For Incident-Automation-Mapping Process')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Automation-Mapping', steps = '15', status = 'ERROR', message = str(error))
@@ -250,18 +247,18 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
             for i, data_row in enumerate(to_be_processed_data):
                 row_list = list(data_row)
                 # check if "keywords_1" and "keywords_2"
-                if ((row_list[2] is None or str(row_list[2]).strip().lower() in ["unspecified", "n/a"]) and (row_list[3] is None or str(row_list[3]).strip().lower() in ["unspecified", "n/a"])):
-                    row_list[4] = 'No'  # automation_probability
-                    row_list[5] = 'No'  # bot_availability
-                    row_list[6] = 'N/A'  # bid
+                if ((row_list[1] is None or str(row_list[1]).strip().lower() in ["unspecified", "n/a"]) and (row_list[2] is None or str(row_list[2]).strip().lower() in ["unspecified", "n/a"])):
+                    row_list[3] = 'No'  # automation_probability
+                    row_list[4] = 'No'  # bot_availability
+                    row_list[5] = 'N/A'  # bid
                     to_be_processed_data[i] = tuple(row_list)
                     skipped_rows += 1
                     continue
                 else:
                     # process "keywords_1" for better search result
-                    k1_processed = clean_text(row_list[2], lemmatizer, stop_words)
+                    k1_processed = clean_text(row_list[1], lemmatizer, stop_words)
                     # process both "keywords_1" and "keywords_2" for better search result
-                    k1_k2_processed = clean_text(f"{row_list[2]} {row_list[3]}", lemmatizer, stop_words)
+                    k1_k2_processed = clean_text(f"{row_list[1]} {row_list[2]}", lemmatizer, stop_words)
                     # define "reference_candidate" empty list for top "bot_id" matching
                     reference_candidate = []
 
@@ -306,9 +303,9 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
                         top_botid = 'N/A'
 
                     # update fields
-                    row_list[4] = 'Yes' if top_botid != 'N/A' else 'No'  # automation_probability
-                    row_list[5] = 'Yes' if top_botid != 'N/A' else 'No'  # bot_availability
-                    row_list[6] = top_botid                              # bid
+                    row_list[3] = 'Yes' if top_botid != 'N/A' else 'No'  # automation_probability
+                    row_list[4] = 'Yes' if top_botid != 'N/A' else 'No'  # bot_availability
+                    row_list[5] = top_botid                              # bid
 
                 # replace updated row
                 to_be_processed_data[i] = tuple(row_list)
@@ -322,16 +319,14 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0], # account_unique_id
-                    data_row[1], # ticket_number
-                    str(data_row[4]), # automation_probability
-                    str(data_row[5]), # bot_availability
-                    str(data_row[6]) # bid
+                    data_row[0], # ticket_number
+                    str(data_row[3]), # automation_probability
+                    str(data_row[4]), # bot_availability
+                    str(data_row[5]) # bid
                 ))
                 # appending data into "input_data_update_rows" empty list
                 input_data_update_rows.append((
-                    data_row[0], # account_unique_id
-                    data_row[1] # ticket_number
+                    data_row[0], # ticket_number
                 ))
         except Exception as error:
             log_writer(script_name = 'Incident-Automation-Mapping', steps = '17', status = 'ERROR', message = str(error))
@@ -341,14 +336,13 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
-                account_unique_id,
                 ticket_number,
                 automation_probability,
                 bot_availability,
                 bid
             )
             VALUES %s
-            ON CONFLICT (ticket_number, account_unique_id)
+            ON CONFLICT (ticket_number)
             DO UPDATE SET
                 automation_probability= EXCLUDED.automation_probability,
                 bot_availability      = EXCLUDED.bot_availability,
@@ -357,7 +351,7 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Automation-Mapping', steps = '18', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Automation-Mapping', steps = '18', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Automation-Mapping', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Automation-Mapping', 'step' : '18', 'message' : str(error)}
@@ -368,19 +362,18 @@ def incident_automation_mapping(account_unique_id: str) -> dict[str, str]: #type
             UPDATE input_incident_data AS t
             SET row_status = 6,
                 row_updated_at = NOW()
-            FROM (VALUES %s) AS v(account_unique_id, ticket_number)
-            WHERE t.account_unique_id = v.account_unique_id
-            AND t.ticket_number = v.ticket_number;'''
+            FROM (VALUES %s) AS v(ticket_number)
+            WHERE t.ticket_number = v.ticket_number;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Automation-Mapping', steps = '19', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "6" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Automation-Mapping', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "6" Inside "input_incident_data" Table')
         except Exception as error:
             log_writer(script_name = 'Incident-Automation-Mapping', steps = '19', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Automation-Mapping', 'step' : '19', 'message' : str(error)}
 
     # sending return message to main script:S20
-    log_writer(script_name = 'Incident-Automation-Mapping', steps = '20', status = 'INFO', message = f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Incident-Automation-Mapping Completed And Updated Into "input_incident_data" Table')
-    log_writer(script_name = 'Incident-Automation-Mapping', steps = '20', status = 'INFO', message = f'For Account: "{account_unique_id}" Total {skipped_rows}-Rows Skipped Due To "keywords_1" And "keywords_2" Both Data Unavailability')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Automation-Mapping', 'step' : '20', 'message' : f'For Account: "{account_unique_id}" Total {total_count}-Rows Of Data Incident-Automation-Mapping Completed And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Automation-Mapping', steps = '20', status = 'INFO', message = f'Total {total_count}-Rows Of Data Incident-Automation-Mapping Completed And Updated Into "input_incident_data" Table')
+    log_writer(script_name = 'Incident-Automation-Mapping', steps = '20', status = 'INFO', message = f'Total {skipped_rows}-Rows Skipped Due To "keywords_1" And "keywords_2" Both Data Unavailability')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Automation-Mapping', 'step' : '20', 'message' : f'Total {total_count}-Rows Of Data Incident-Automation-Mapping Completed And Updated Into "input_incident_data" Table'}

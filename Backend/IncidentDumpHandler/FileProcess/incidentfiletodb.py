@@ -1,5 +1,5 @@
 # define "incident_file_to_db" function
-def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: str) -> dict[str, str]: #type: ignore
+def incident_file_to_db(file_unique_id: str, file_path: str) -> dict[str, str]: #type: ignore
     # importing python module:S01
     try:
         from pathlib import Path
@@ -86,27 +86,7 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
         log_writer(script_name = 'Incident-File-To-DB', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '8', 'message' : str(error)}
 
-    # check if "account_details" table present inside database:S09
-    try:
-        account_details_table_present_check_sqk = '''
-        SELECT EXISTS (
-            SELECT FROM information_schema.tables
-            WHERE table_schema = 'public'
-            AND table_name = 'account_details'
-        );'''
-        with psycopg2.connect(**database_connection_parameter) as database_connection: # type: ignore
-            with database_connection.cursor() as database_cursor:
-                database_cursor.execute(account_details_table_present_check_sqk)
-                if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'SUCCESS', message = '"account_details" Table Present Inside Database')
-                else:
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'ERROR', message = '"account_details" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '9', 'message' : '"account_details" Table Not Present'}
-    except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'ERROR', message = str(error))
-        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '9', 'message' : str(error)}
-
-    # check if "skip_row_details" table present inside database:S10
+    # check if "skip_row_details" table present inside database:S09
     try:
         skip_row_details_table_present_check_sql = '''
         SELECT EXISTS (
@@ -118,28 +98,28 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(skip_row_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'SUCCESS', message = '"skip_row_details" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'SUCCESS', message = '"skip_row_details" Table Present Inside Database')
                 else:
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'ERROR', message = '"skip_row_details" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '10', 'message' : '"skip_row_details" Table Not Present'}
+                    log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'ERROR', message = '"skip_row_details" Table Not Present')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '9', 'message' : '"skip_row_details" Table Not Present'}
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'ERROR', message = str(error))
-        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '10', 'message' : str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '9', status = 'ERROR', message = str(error))
+        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '9', 'message' : str(error)}
 
-    # check if input file is valid:S11
+    # check if input file is valid:S10
     try:
         # convert string file path into Path object
         file_path_object = Path(file_path)
         if ((file_path_object.exists()) and (file_path_object.is_file()) and (file_path_object.suffix.lower() == '.xlsx')):
-            log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Acceptable With Allowed File Type')
+            log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Acceptable With Allowed File Type')
         else:
-            log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Not A Aceeptable File')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '11', 'message' : 'Submitted File Not A Aceeptable File'}
+            log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Not A Aceeptable File')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '10', 'message' : 'Submitted File Not A Aceeptable File'}
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'ERROR', message = str(error))
-        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '11', 'message' : str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '10', status = 'ERROR', message = str(error))
+        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '10', 'message' : str(error)}
 
-    # check input file sheet count:S12
+    # check input file sheet count:S11
     try:
         # load the workbook
         incident_file_workbook_object = load_workbook(file_path)
@@ -147,24 +127,24 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
         incident_file_sheet_names = incident_file_workbook_object.sheetnames
         # check number of sheet
         if (int(len(incident_file_sheet_names)) != 1):
-            log_writer(script_name = 'Incident-File-To-DB', steps = '12', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Present Multiple Sheets')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '12', 'message' : 'Submitted File Present Multiple Sheets'}
+            log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Present Multiple Sheets')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '11', 'message' : 'Submitted File Present Multiple Sheets'}
         else:
             incident_file_sheet_name = incident_file_sheet_names[0]
-            log_writer(script_name = 'Incident-File-To-DB', steps = '12', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Present One Sheet Which Is: "{incident_file_sheet_name}"')
+            log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Present One Sheet Which Is: "{incident_file_sheet_name}"')
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '12', status = 'ERROR', message = str(error))
-        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '12', 'message' : str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '11', status = 'ERROR', message = str(error))
+        return {'status' : 'ERROR', 'file_name' : 'Incident-File-To-DB', 'step' : '11', 'message' : str(error)}
 
-    # load the input file for further processing:S13
+    # load the input file for further processing:S12
     try:
         incident_ticket_dataframe = pandas.read_excel(str(file_path_object), sheet_name = incident_file_sheet_name, engine = 'openpyxl', keep_default_na = False)
-        log_writer(script_name = 'Incident-File-To-DB', steps = '13', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Sheet: "{incident_file_sheet_name}" Loaded Into Memory For Processing')
+        log_writer(script_name = 'Incident-File-To-DB', steps = '12', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Sheet: "{incident_file_sheet_name}" Loaded Into Memory For Processing')
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '13', status = 'ERROR', message = str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '13', 'message': str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '12', status = 'ERROR', message = str(error))
+        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '12', 'message': str(error)}
 
-    # define "input_incident_data" upsert SQL:S14
+    # define "input_incident_data" upsert SQL:S13
     try:
         input_incident_data_insert_sql = '''
         INSERT INTO input_incident_data (
@@ -207,12 +187,12 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
             resolution_notes    = EXCLUDED.resolution_notes,
             row_updated_at      = NOW(),
             row_status          = 1;'''
-        log_writer(script_name = 'Incident-File-To-DB', steps = '14', status = 'SUCCESS', message = 'Upsert SQL Defined For "input_incident_data" Table')
+        log_writer(script_name = 'Incident-File-To-DB', steps = '13', status = 'SUCCESS', message = 'Upsert SQL Defined For "input_incident_data" Table')
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '14', status = 'ERROR', message = str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '14', 'message': str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '13', status = 'ERROR', message = str(error))
+        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '13', 'message': str(error)}
 
-    # define "skip_row_details" insert sql:S15
+    # define "skip_row_details" insert sql:S14
     try:
         skip_row_details_insert_sql = '''
         INSERT INTO skip_row_details (
@@ -221,12 +201,12 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
             skip_reason
         )
         VALUES %s;'''
-        log_writer(script_name = 'Incident-File-To-DB', steps = '15', status = 'SUCCESS', message = 'Insert SQL Defined For "skip_row_details" Table')
+        log_writer(script_name = 'Incident-File-To-DB', steps = '14', status = 'SUCCESS', message = 'Insert SQL Defined For "skip_row_details" Table')
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '15', status = 'ERROR', message = str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '15', 'message': str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '14', status = 'ERROR', message = str(error))
+        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '14', 'message': str(error)}
 
-    # define "normalize_datetime" function:S17
+    # define "normalize_datetime" function:S16
     try:
         def normalize_datetime(value):
             if ((pandas.isna(value)) or (value == '')):
@@ -247,8 +227,8 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 return dt.tz_localize('UTC')
             return dt.tz_convert('UTC')
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '17', status = 'ERROR', message = str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '17', 'message': str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '16', status = 'ERROR', message = str(error))
+        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '16', 'message': str(error)}
 
     # define constant
     file_to_db_rows_limiter = int(str(environment_values.get('FILE_TO_DB_BATCH')))
@@ -278,7 +258,7 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                             skip_reason_map[col])) # skip_reason
             continue
 
-        # normalize datetime for upserting:S18
+        # normalize datetime for upserting:S17
         try:
             normalize_opened_at = normalize_datetime(row.get('opened_at'))
             normalize_resolved_at = normalize_datetime(row.get('resolved_at'))
@@ -291,10 +271,10 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                         skip_data_insert_rows.append((str(file_unique_id), str(row.get('ticket_number')), 'Resolved Date'))
                 continue
         except Exception as error:
-            log_writer(script_name='Incident-File-To-DB', steps='18', status='ERROR', message=str(error))
-            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '18', 'message': str(error)}
+            log_writer(script_name='Incident-File-To-DB', steps='17', status='ERROR', message=str(error))
+            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '17', 'message': str(error)}
 
-        # prepare value tuple for upserting:S19
+        # prepare value tuple for upserting:S18
         try:
             # define "safe_get" function for empty row
             def safe_get(row, field):
@@ -321,11 +301,12 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 safe_get(row, 'description'),
                 safe_get(row, 'work_notes'),
                 safe_get(row, 'resolution_notes')))
-        except Exception as error:
-            log_writer(script_name = 'Incident-File-To-DB', steps = '19', status = 'ERROR', message = str(error))
-            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '19', 'message': str(error)}
 
-        # upsert input batch when limit reached:S20
+        except Exception as error:
+            log_writer(script_name = 'Incident-File-To-DB', steps = '18', status = 'ERROR', message = str(error))
+            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '18', 'message': str(error)}
+
+        # upsert input batch when limit reached:S19
         if (len(input_data_insert_rows) >= file_to_db_rows_limiter):
             try:
                 # create database connection object
@@ -333,14 +314,14 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                     with database_connection.cursor() as database_cursor:
                         execute_values(database_cursor, input_incident_data_insert_sql, input_data_insert_rows)
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-File-To-DB', steps = '20', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(input_data_insert_rows) + 1}-{row_counter} Insert Success In "input_incident_data" Table')
+                        log_writer(script_name = 'Incident-File-To-DB', steps = '19', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(input_data_insert_rows) + 1}-{row_counter} Insert Success In "input_incident_data" Table')
                         input_data_insert_rows.clear()
             except Exception as error:
                 database_connection.rollback()
-                log_writer(script_name = 'Incident-File-To-DB', steps = '20', status = 'ERROR', message = str(error))
-                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '20', 'message': str(error)}
+                log_writer(script_name = 'Incident-File-To-DB', steps = '19', status = 'ERROR', message = str(error))
+                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '19', 'message': str(error)}
 
-        # upsert skip batch when limit reached:S21
+        # upsert skip batch when limit reached:S20
         if (len(skip_data_insert_rows) >= file_to_db_rows_limiter):
             try:
                 # create database connection object
@@ -348,14 +329,14 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                     with database_connection.cursor() as database_cursor:
                         execute_values(database_cursor, skip_row_details_insert_sql, skip_data_insert_rows)
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-File-To-DB', steps = '21', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(skip_data_insert_rows) + 1}-{row_counter} Insert Success Inside "skip_row_details" Table')
+                        log_writer(script_name = 'Incident-File-To-DB', steps = '20', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(skip_data_insert_rows) + 1}-{row_counter} Insert Success Inside "skip_row_details" Table')
                         skip_data_insert_rows.clear()
             except Exception as error:
                 database_connection.rollback()
-                log_writer(script_name = 'Incident-File-To-DB', steps = '21', status = 'ERROR', message = str(error))
-                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '21', 'message': str(error)}
+                log_writer(script_name = 'Incident-File-To-DB', steps = '20', status = 'ERROR', message = str(error))
+                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '20', 'message': str(error)}
 
-    # handle leftover input batch rows:S22
+    # handle leftover input batch rows:S21
     if (input_data_insert_rows):
         try:
             # create database connection object
@@ -363,15 +344,15 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, input_incident_data_insert_sql, input_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '22', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(input_data_insert_rows) + 1}-{row_counter} Insert Success Inside "input_incident_data" Table')
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '22', status = 'INFO', message = f'File: "{file_path_object.name}" Total Skipped Rows: "{skipped_rows}"')
+                    log_writer(script_name = 'Incident-File-To-DB', steps = '21', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(input_data_insert_rows) + 1}-{row_counter} Insert Success Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-File-To-DB', steps = '21', status = 'INFO', message = f'File: "{file_path_object.name}" Total Skipped Rows: "{skipped_rows}"')
                     input_data_insert_rows.clear()
         except Exception as error:
             database_connection.rollback()
-            log_writer(script_name = 'Incident-File-To-DB', steps = '22', status = 'ERROR', message=str(error))
-            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '22', 'message': str(error)}
+            log_writer(script_name = 'Incident-File-To-DB', steps = '21', status = 'ERROR', message=str(error))
+            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '21', 'message': str(error)}
 
-    # handle leftover skip batch rows:S23
+    # handle leftover skip batch rows:S22
     if (skip_data_insert_rows):
         try:
             # create database connection object
@@ -379,42 +360,27 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, skip_row_details_insert_sql, skip_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(skip_data_insert_rows) + 1}-{row_counter} Insert Success Inside "skip_row_details" Table')
+                    log_writer(script_name = 'Incident-File-To-DB', steps = '22', status = 'SUCCESS', message = f'File: "{file_path_object.name}" Batch {row_counter - len(skip_data_insert_rows) + 1}-{row_counter} Insert Success Inside "skip_row_details" Table')
                     skip_data_insert_rows.clear()
         except Exception as error:
             database_connection.rollback()
-            log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'ERROR', message=str(error))
-            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '23', 'message': str(error)}
+            log_writer(script_name = 'Incident-File-To-DB', steps = '22', status = 'ERROR', message=str(error))
+            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '22', 'message': str(error)}
 
-    # update "skip_rows_count" in "account_details" table:S24
-    try:
-        skip_rows_count_update_for_account_details_sql = '''
-        UPDATE account_details
-        SET skip_rows_count = skip_rows_count + %s
-        WHERE account_unique_id = %s;'''
-        with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
-            with database_connection.cursor() as database_cursor:
-                database_cursor.execute(skip_rows_count_update_for_account_details_sql, (int(skipped_rows), str(account_unique_id)))
-                database_connection.commit()
-                log_writer(script_name = 'Incident-File-To-DB', steps = '24', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Skip Rows Count Updated Inside "account_details" Table')
-    except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '24', status = 'ERROR', message=str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '24', 'message': str(error)}
-
-    # delete temp stored file from the server:S25
+    # delete temp stored file from the server:S23
     try:
         if ((file_path_object.exists()) and (file_path_object.is_file())):
             file_path_object.unlink()
             # check if file is deleted successfully
             if (not file_path_object.exists()):
-                log_writer(script_name = 'Incident-File-To-DB', steps = '25', status = 'SUCCESS', message = f'Temp Stored File: "{file_path_object.name}" Deleted From The "../TempFilesDump" Folder')
-                return {'status': 'SUCCESS', 'file_name': 'Incident-File-To-DB', 'step': '25', 'message': 'File To Database Data Transfer Complete'}
+                log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'SUCCESS', message = f'Temp Stored File: "{file_path_object.name}" Deleted From The "../TempFilesDump" Folder')
+                return {'status': 'SUCCESS', 'file_name': 'Incident-File-To-DB', 'step': '23', 'message': 'File To Database Data Transfer Complete'}
             else:
-                log_writer(script_name = 'Incident-File-To-DB', steps = '25', status = 'ERROR', message = f'Temp Stored File: "{file_path_object.name}" Not Deleted From The "../TempFilesDump" Folder')
-                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '25', 'message': f'Temp Stored File: "{file_path_object.name}" Not Deleted From The "../TempFilesDump" Folder'}
+                log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'ERROR', message = f'Temp Stored File: "{file_path_object.name}" Not Deleted From The "../TempFilesDump" Folder')
+                return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '23', 'message': f'Temp Stored File: "{file_path_object.name}" Not Deleted From The "../TempFilesDump" Folder'}
         else:
-            log_writer(script_name = 'Incident-File-To-DB', steps = '25', status = 'ERROR', message = f'Temp Stored File: "{file_path_object.name}" Not Present Or Not A Valid File')
-            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '25', 'message': f'Temp Stored File: "{file_path_object.name}" Not Present Or Not A Valid File'}
+            log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'ERROR', message = f'Temp Stored File: "{file_path_object.name}" Not Present Or Not A Valid File')
+            return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '23', 'message': f'Temp Stored File: "{file_path_object.name}" Not Present Or Not A Valid File'}
     except Exception as error:
-        log_writer(script_name = 'Incident-File-To-DB', steps = '25', status = 'ERROR', message=str(error))
-        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '25', 'message': str(error)}
+        log_writer(script_name = 'Incident-File-To-DB', steps = '23', status = 'ERROR', message=str(error))
+        return {'status': 'ERROR', 'file_name': 'Incident-File-To-DB', 'step': '23', 'message': str(error)}

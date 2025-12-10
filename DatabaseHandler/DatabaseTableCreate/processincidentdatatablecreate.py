@@ -40,8 +40,7 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
         processed_incident_data_table_create_sql = f'''
         CREATE TABLE processed_incident_data (
             id SERIAL PRIMARY KEY,
-            ticket_number VARCHAR(20) NOT NULL,
-            account_name VARCHAR(50) NOT NULL,
+            ticket_number VARCHAR(20) NOT NULL UNIQUE,
             ticket_type VARCHAR(50) NOT NULL DEFAULT 'Incident',
             row_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             ticket_opened_day INTEGER NOT NULL DEFAULT 1,
@@ -103,8 +102,7 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             correlated_event VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (correlated_event IN ('Yes','No')),
             autoheal_category VARCHAR(15) NOT NULL DEFAULT 'Non_AutoHeal' CHECK (autoheal_category IN ('Non_AutoHeal','AutoHeal')),
             eso_analysis TEXT NOT NULL DEFAULT 'N/A',
-            final_category VARCHAR(20) NOT NULL DEFAULT 'N/A' CHECK (final_category IN ('Elimination','Standardization','Automation','Exploratory','N/A')),
-            CONSTRAINT unique_account_incident_processed UNIQUE (account_name, ticket_number)
+            final_category VARCHAR(20) NOT NULL DEFAULT 'N/A' CHECK (final_category IN ('Elimination','Standardization','Automation','Exploratory','N/A'))
         );
         ALTER TABLE processed_incident_data OWNER TO {table_owner};'''
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
@@ -136,12 +134,14 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
         CREATE OR REPLACE FUNCTION processed_incident_trigger_function()
         RETURNS TRIGGER AS $$
         BEGIN
+            -- Normalize ticket_number
             IF NEW.ticket_number IS NOT NULL THEN
                 NEW.ticket_number := UPPER(TRIM(NEW.ticket_number));
             END IF;
 
-            IF NEW.account_name IS NOT NULL THEN
-                NEW.account_name := TRIM(NEW.account_name);
+            -- Reject rows with empty ticket_number
+            IF NEW.ticket_number IS NULL OR LENGTH(TRIM(NEW.ticket_number)) = 0 THEN
+                RETURN NULL;
             END IF;
 
             IF NEW.opened_at IS NOT NULL THEN
@@ -162,10 +162,6 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
                 NEW.ticket_resolved_hours := EXTRACT(HOUR FROM NEW.resolved_at)::INTEGER;
                 NEW.ticket_resolved_minutes := EXTRACT(MINUTE FROM NEW.resolved_at)::INTEGER;
                 NEW.ticket_resolved_seconds := EXTRACT(SECOND FROM NEW.resolved_at)::INTEGER;
-            END IF;
-
-            IF NEW.account_name IS NULL OR LENGTH(TRIM(NEW.account_name)) = 0 THEN
-                RETURN NULL;
             END IF;
 
             NEW.row_updated_at := NOW();

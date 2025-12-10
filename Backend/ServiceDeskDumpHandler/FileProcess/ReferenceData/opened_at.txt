@@ -1,4 +1,0 @@
-opened
-opendate
-openedat
-openeddate
