@@ -127,16 +127,14 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'MTTR Analysis', int(elapsed_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'MTTR Analysis', int(elapsed_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -202,16 +200,14 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Elimination Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Elimination Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -277,16 +273,14 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Standardization Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Standardization Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -352,16 +346,14 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Optimization Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Optimization Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -426,16 +418,14 @@ def incident_esoar_process(account_unique_id: str, file_unique_id: str, user_uni
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Final Category Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Final Category Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):

@@ -1,5 +1,5 @@
 # define "incident_data_process" function
-def incident_data_process(account_unique_id: str, file_unique_id: str, user_unique_id: str, user_email: str, file_path: str):
+def incident_data_process(file_unique_id: str, file_path: str):
     # define constant
     INCIDENT_DATA_COLUMN_PROCESS_COMPLETE_STATUS = False
     INCIDENT_DATA_FILE_TO_DB_PROCESS_COMPLETE_STATUS = False
@@ -152,17 +152,15 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 process_description,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -184,17 +182,15 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 process_description,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -220,7 +216,7 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_file_to_db" function:S11-B
         try:
             incident_file_to_db_process_start_time = time.time()
-            incident_data_file_to_db_backend_response = incident_file_to_db(account_unique_id = str(account_unique_id), file_unique_id = str(file_unique_id), file_path = str(incident_column_process_backend_response['file_path']))
+            incident_data_file_to_db_backend_response = incident_file_to_db(file_unique_id = str(file_unique_id), file_path = str(incident_column_process_backend_response['file_path']))
             if (incident_data_file_to_db_backend_response != None):
                 log_writer(script_name = 'Incident-Data-Process', steps = '11-B', status = 'INFO', message = f'For File: "{Path(file_path).name}" File To DB Backend Porcess Response Generate')
             incident_file_to_db_process_end_time = time.time()
@@ -248,16 +244,14 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'File To DB', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'File To DB', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -283,9 +277,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_output_data_fill" function:S12-B
         try:
             incident_output_data_fill_process_start_time = time.time()
-            incident_output_data_fill_backend_response = incident_output_data_fill(account_unique_id = str(account_unique_id))
+            incident_output_data_fill_backend_response = incident_output_data_fill()
             if (incident_output_data_fill_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Output Table Data Fill Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'INFO', message = f'For Account Output Table Data Fill Backend Process Response Generate')
             incident_output_data_fill_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'ERROR', message = str(error))
@@ -305,26 +299,24 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Output Data Fill', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Output Data Fill', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_OUTPUT_DATA_FILL_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Output Data Fill Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = f'For Account Output Data Fill Process Not Completed')
                         else:
                             INCIDENT_DATA_OUTPUT_DATA_FILL_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Output Data Fill Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account Output Data Fill Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -340,9 +332,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_normalized_data" function:S13-B
         try:
             data_normalization_process_start_time = time.time()
-            normalized_data_backend_response = incident_normalized_data(account_unique_id = str(account_unique_id))
+            normalized_data_backend_response = incident_normalized_data()
             if (normalized_data_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Data Normalization Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'INFO', message = f'For Account Data Normalization Backend Process Response Generate')
             data_normalization_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'ERROR', message = str(error))
@@ -362,26 +354,24 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Data Normalization', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Data Normalization', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_DATA_NORMALIZED_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Data Normalization Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = f'For Account Data Normalization Process Not Completed')
                         else:
                             INCIDENT_DATA_DATA_NORMALIZED_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Data Normalization Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account Data Normalization Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -397,9 +387,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_information_clean" function:S14-B
         try:
             information_clean_process_start_time = time.time()
-            information_clean_backend_response = incident_information_clean(account_unique_id = str(account_unique_id))
+            information_clean_backend_response = incident_information_clean()
             if (information_clean_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '14-B', status = 'SUCCESS', message = f'For Account: "{account_unique_id}" Information Clean Process Backend Response Generated')
+                log_writer(script_name = 'Incident-Data-Process', steps = '14-B', status = 'SUCCESS', message = f'For Account Information Clean Process Backend Response Generated')
             information_clean_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '14-B', status = 'ERROR', message = str(error))
@@ -419,26 +409,24 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Information Cleaning', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Information Cleaning', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDNET_DATA_INFORMATION_CLEAN_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '14-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Information Clean Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '14-D', status = 'ERROR', message = f'For Account Information Clean Process Not Completed')
                         else:
                             INCIDNET_DATA_INFORMATION_CLEAN_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '14-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Information Clean Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '14-D', status = 'SUCCESS', message = f'For Account Information Clean Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '14-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -454,9 +442,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_keyword_analysis" function:S15-B
         try:
             keyword_analysis_process_start_time = time.time()
-            keywords_analysis_backend_response = incident_keyword_analysis(account_unique_id = str(account_unique_id))
+            keywords_analysis_backend_response = incident_keyword_analysis()
             if (keywords_analysis_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Keyword Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'INFO', message = f'For Account Keyword Analysis Backend Process Response Generate')
             keyword_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'ERROR', message = str(error))
@@ -476,26 +464,24 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Keywords Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Keywords Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_KEYWORD_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '15-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Keywords Analysis Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '15-D', status = 'ERROR', message = f'For Account Keywords Analysis Process Not Completed')
                         else:
                             INCIDENT_DATA_KEYWORD_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '15-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Keywords Analysis Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '15-D', status = 'SUCCESS', message = f'For Account Keywords Analysis Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '15-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -511,9 +497,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
         # calling "incident_automation_mapping" function:S16-B
         try:
             automation_mapping_process_start_time = time.time()
-            automation_mapping_backend_response = incident_automation_mapping(account_unique_id = str(account_unique_id))
+            automation_mapping_backend_response = incident_automation_mapping()
             if (automation_mapping_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account: "{account_unique_id}" Automation Mapping Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account Automation Mapping Backend Process Response Generate')
             automation_mapping_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'ERROR', message = str(error))
@@ -533,26 +519,24 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Automation Mapping', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Automation Mapping', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_AUTOMATION_MAPPING_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Automation Mapping Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'ERROR', message = f'For Account Automation Mapping Process Not Completed')
                         else:
                             INCIDENT_DATA_AUTOMATION_MAPPING_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Automation Mapping Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'SUCCESS', message = f'For Account Automation Mapping Process Completed')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '16-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -567,9 +551,9 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
 
         # calling "incident_esoar_process" function:S16-B
         try:
-            esoar_analysis_function_response = incident_esoar_process(account_unique_id = str(account_unique_id), file_unique_id = str(file_unique_id), user_unique_id = str(user_unique_id))
+            esoar_analysis_function_response = incident_esoar_process(file_unique_id = str(file_unique_id))
             if (esoar_analysis_function_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account: "{account_unique_id}" ESO Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account ESO Analysis Backend Process Response Generate')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'ERROR', message = str(error))
 
@@ -596,12 +580,10 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
             fetch_process_total_completion_seconds_sql = '''
             SELECT SUM(completion_time_seconds) AS total_completion_seconds
             FROM file_process_status
-            WHERE file_unique_id = %s
-            AND account_unique_id = %s
-            AND file_submitted_by = %s;'''
+            WHERE file_unique_id = %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_process_total_completion_seconds_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id)))
+                    database_cursor.execute(fetch_process_total_completion_seconds_sql, (str(file_unique_id),))
                     all_process_total_completion_seconds = database_cursor.fetchone()[0]
                     # check result
                     if ((all_process_total_completion_seconds is not None) and (int(all_process_total_completion_seconds) > 0)):
@@ -616,24 +598,22 @@ def incident_data_process(account_unique_id: str, file_unique_id: str, user_uniq
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Analysis Complete', int(all_process_total_completion_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Analysis Complete', int(all_process_total_completion_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         database_connection.rollback()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = f'For Account: "{str(account_unique_id)}" Whole Analysis Complete')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = f'For Account Whole Analysis Complete')
                     else:
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'SUCCESS', message = f'For Account: "{str(account_unique_id)}" Whole Analysis Not Completed')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'SUCCESS', message = f'For Account Whole Analysis Not Completed')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = str(error))
     #####################################################

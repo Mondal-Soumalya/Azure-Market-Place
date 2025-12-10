@@ -99,10 +99,6 @@ def incidentanalysis():
 
         # fetching details from frontend:S10-B
         try:
-            # get the account id
-            incident_analysis_account_id = request.form.get('account_name')
-            # get the user unique id
-            user_unique_id = session['user_unique_id']
             # get ticket dump file
             incident_analysis_ticket_file = request.files.get('incident_dump_file')
         except Exception as error:
@@ -110,10 +106,10 @@ def incidentanalysis():
             return jsonify({'error': 'An error occurred while processing the form'}), 500
 
         # calling "incident_ticket_file_handler" function to process file:S10-C
-        if ((incident_analysis_ticket_file) and (str(incident_analysis_account_id) != '')):
+        if (incident_analysis_ticket_file):
             try:
                 # pass the file to incident_ticket_file_handler function
-                incident_file_analysis_backend_process = incident_ticket_file_handler(user_email = str(session['user_email_id']), user_unique_id = str(user_unique_id), account_unique_id = str(incident_analysis_account_id), file = incident_analysis_ticket_file)
+                incident_file_analysis_backend_process = incident_ticket_file_handler(file = incident_analysis_ticket_file)
                 # check response
                 if (str(incident_file_analysis_backend_process['status']).lower() == 'success'):
                     log_writer(script_name = 'App', steps = '10-C', status = 'SUCCESS', message = str(incident_file_analysis_backend_process['message']))

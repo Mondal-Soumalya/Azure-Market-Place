@@ -1,5 +1,5 @@
 # define "incident_ticket_file_handler" function
-def incident_ticket_file_handler(user_email: str, user_unique_id: str, account_unique_id: str, file) -> dict[str, str]: #type: ignore
+def incident_ticket_file_handler(file) -> dict[str, str]: #type: ignore
     # importing module:S01
     try:
         from pathlib import Path
@@ -110,7 +110,7 @@ def incident_ticket_file_handler(user_email: str, user_unique_id: str, account_u
         # define current UTC time
         utc_current_time = datetime.now(ZoneInfo('UTC')).strftime("%Y-%m-%d_%H-%M-%S")
         # define file name
-        new_file_name = secure_filename(f"{account_unique_id}_{utc_current_time}_UTC.xlsx")
+        new_file_name = secure_filename(f"{utc_current_time}_UTC.xlsx")
         # define file store path
         new_file_archive_store_path = Path(incident_files_folder_path) / new_file_name
         log_writer(script_name = 'Incident-File-Handler', steps = '10', status = 'SUCCESS', message = f'"{new_file_name}" File Name Created')
@@ -263,7 +263,7 @@ def incident_ticket_file_handler(user_email: str, user_unique_id: str, account_u
     # calling "incident_data_process" thread:S18
     try:
         def run_incident_process():
-            incident_data_process(account_unique_id = str(account_unique_id), file_unique_id = str(file_unique_id), user_unique_id = str(user_unique_id), user_email = str(user_email), file_path = str(new_file_temp_stored_path))
+            incident_data_process(file_unique_id = str(file_unique_id), file_path = str(new_file_temp_stored_path))
         thread = Thread(target = run_incident_process)
         thread.start()
         log_writer(script_name = 'Incident-File-Handler', steps = '18', status = 'SUCCESS', message = 'A New Thread Started For Incident Data Processing')

@@ -243,17 +243,15 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 process_description,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -276,17 +274,15 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 process_description,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Column Mapping', str(column_process_description), int(elapsed_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -346,16 +342,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'File To DB', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'File To DB', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -576,16 +570,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Output Data Fill', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Output Data Fill', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -653,16 +645,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Data Normalization', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Data Normalization', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -730,16 +720,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Information Cleaning', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Information Cleaning', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -807,16 +795,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Translate And Desk Language Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Translate And Desk Language Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -884,16 +870,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Keywords Analysis', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Keywords Analysis', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -961,16 +945,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
                 file_process_status_insert_sql = '''
                 INSERT INTO file_process_status (
                     file_unique_id,
-                    account_unique_id,
-                    file_submitted_by,
                     process_name,
                     completion_time_seconds
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s)
                 RETURNING id;'''
                 with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                     with database_connection.cursor() as database_cursor:
-                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Automation Mapping', int(elapsed_seconds)))
+                        database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Automation Mapping', int(elapsed_seconds)))
                         insert_id_result = database_cursor.fetchone()
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
@@ -1046,12 +1028,10 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
             fetch_process_total_completion_seconds_sql = '''
             SELECT SUM(completion_time_seconds) AS total_completion_seconds
             FROM file_process_status
-            WHERE file_unique_id = %s
-            AND account_unique_id = %s
-            AND file_submitted_by = %s;'''
+            WHERE file_unique_id = %s;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(fetch_process_total_completion_seconds_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id)))
+                    database_cursor.execute(fetch_process_total_completion_seconds_sql, (str(file_unique_id),))
                     all_process_total_completion_seconds = database_cursor.fetchone()[0]
                     # check result
                     if ((all_process_total_completion_seconds is not None) and (int(all_process_total_completion_seconds) > 0)):
@@ -1067,16 +1047,14 @@ def service_desk_data_process(account_unique_id: str, file_unique_id: str, user_
             file_process_status_insert_sql = '''
             INSERT INTO file_process_status (
                 file_unique_id,
-                account_unique_id,
-                file_submitted_by,
                 process_name,
                 completion_time_seconds
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s)
             RETURNING id;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
-                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), str(account_unique_id), str(user_unique_id), 'Analysis Complete', int(all_process_total_completion_seconds)))
+                    database_cursor.execute(file_process_status_insert_sql, (str(file_unique_id), 'Analysis Complete', int(all_process_total_completion_seconds)))
                     insert_id_result = database_cursor.fetchone()
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):

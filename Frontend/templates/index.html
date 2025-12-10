@@ -13,7 +13,8 @@
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="{{ url_for('static', filename='js/general-webpage-function.js') }}"></script>
 </head>
 
@@ -59,15 +60,27 @@
                 <p class="section-subtitle">Integrated AI tools designed for complex enterprise needs.</p>
 
                 <div class="options-container">
-                    <!-- Analysis Card -->
-                    <a href="{{ url_for('analysisenginepage') }}" class="option-card feature-card">
+                    <!-- Incident Analysis Card -->
+                    <a href="{{ url_for('incidentanalysis') }}" class="option-card feature-card">
                         <div class="card-icon-wrapper analysis-icon">
                             <i class="fas fa-chart-line fa-3x"></i>
                         </div>
-                        <h3>E.S.O.A.R Ticket Analysis</h3>
+                        <h3>Incident Ticket Analysis</h3>
                         <p>Our Intelligent Analysis Engine meticulously examines the uploaded ticket dump to uncover
                             ESOAR opportunities—Eliminate, Standardize, Optimize, Automate, and Robotize—delivering
                             deeper, actionable insights that drive transformative outcomes</p>
+                        <span class="card-link-indicator">Access Module <i class="fas fa-external-link-alt"></i></span>
+                    </a>
+
+                    <!-- Service-Desk Analysis Card -->
+                    <a href="{{ url_for('servicedeskanalysis') }}" class="option-card feature-card">
+                        <div class="card-icon-wrapper enhancement-icon">
+                            <i class="fas fa-sitemap fa-3x"></i>
+                        </div>
+                        <h3>Service Desk Ticket Analysis</h3>
+                        <p>Our analysis engine scans service desk tickets to identify ESOAR opportunities—Eliminate,
+                            Standardize, Optimize, Automate, and Robotize—driving smarter, faster, and more efficient IT
+                            support.</p>
                         <span class="card-link-indicator">Access Module <i class="fas fa-external-link-alt"></i></span>
                     </a>
                 </div>
