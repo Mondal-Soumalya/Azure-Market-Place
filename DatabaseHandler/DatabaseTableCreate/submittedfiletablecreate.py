@@ -49,8 +49,7 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
             file_size_in_bytes BIGINT NOT NULL,
             data_rows_count BIGINT NOT NULL,
             file_type VARCHAR(4) NOT NULL CHECK (LOWER(file_type) = 'xlsx'),
-            file_approved_status VARCHAR(8) NOT NULL DEFAULT 'Declined'
-                CHECK (file_approved_status IN ('Approved','Declined'))
+            file_approved_status VARCHAR(8) NOT NULL DEFAULT 'Declined' CHECK (file_approved_status IN ('Approved','Declined'))
         );
         ALTER TABLE submitted_file_details OWNER TO {table_owner};'''
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore

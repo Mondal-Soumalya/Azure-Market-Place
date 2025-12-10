@@ -168,7 +168,6 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
     try:
         input_incident_data_insert_sql = '''
         INSERT INTO input_incident_data (
-            account_unique_id,
             ticket_number,
             ticket_type,
             opened_at,
@@ -188,7 +187,7 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
             resolution_notes
         )
         VALUES %s
-        ON CONFLICT (account_unique_id, ticket_number)
+        ON CONFLICT (ticket_number)
         DO UPDATE SET
             ticket_type         = EXCLUDED.ticket_type,
             opened_at           = EXCLUDED.opened_at,
@@ -206,6 +205,7 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
             description         = EXCLUDED.description,
             work_notes          = EXCLUDED.work_notes,
             resolution_notes    = EXCLUDED.resolution_notes,
+            row_updated_at      = NOW(),
             row_status          = 1;'''
         log_writer(script_name = 'Incident-File-To-DB', steps = '14', status = 'SUCCESS', message = 'Upsert SQL Defined For "input_incident_data" Table')
     except Exception as error:
@@ -216,7 +216,6 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
     try:
         skip_row_details_insert_sql = '''
         INSERT INTO skip_row_details (
-            account_unique_id,
             file_unique_id,
             ticket_number,
             skip_reason
@@ -274,8 +273,7 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 for col in ['opened_at', 'resolved_at']:
                     if pandas.isna(row.get(col)) or str(row.get(col)).strip() in ['', 'N/A']:
                         skip_data_insert_rows.append(
-                            (str(account_unique_id), # account_unique_id
-                            str(file_unique_id), # file_unique_id
+                            (str(file_unique_id), # file_unique_id
                             str(row.get('ticket_number')), # ticket_number
                             skip_reason_map[col])) # skip_reason
             continue
@@ -288,9 +286,9 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 skipped_rows += 1
                 if not (pandas.isna(row.get('ticket_number')) or str(row.get('ticket_number')).strip() in ['', 'N/A']):
                     if normalize_opened_at is None:
-                        skip_data_insert_rows.append((str(account_unique_id), str(file_unique_id), str(row.get('ticket_number')), 'Open Date'))
+                        skip_data_insert_rows.append((str(file_unique_id), str(row.get('ticket_number')), 'Open Date'))
                     if normalize_resolved_at is None:
-                        skip_data_insert_rows.append((str(account_unique_id), str(file_unique_id), str(row.get('ticket_number')), 'Resolved Date'))
+                        skip_data_insert_rows.append((str(file_unique_id), str(row.get('ticket_number')), 'Resolved Date'))
                 continue
         except Exception as error:
             log_writer(script_name='Incident-File-To-DB', steps='18', status='ERROR', message=str(error))
@@ -306,7 +304,6 @@ def incident_file_to_db(account_unique_id: str, file_unique_id: str, file_path: 
                 return value
             # appending tuple into empty list for upserting
             input_data_insert_rows.append((
-                str(account_unique_id),
                 str(row.get('ticket_number')),
                 safe_get(row, 'type'),
                 normalize_opened_at,
