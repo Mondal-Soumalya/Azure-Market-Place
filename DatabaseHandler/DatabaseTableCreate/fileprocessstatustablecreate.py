@@ -41,7 +41,6 @@ def file_process_status_table_create(db_name: str, db_user: str, db_password: st
         CREATE TABLE file_process_status (
             id SERIAL PRIMARY KEY,
             file_unique_id VARCHAR(6) NOT NULL CHECK (char_length(file_unique_id) = 6),
-            account_name VARCHAR(150) NOT NULL,
             shared_file_name VARCHAR(150) NOT NULL,
             process_name VARCHAR(80) NOT NULL CHECK (
                 process_name IN (
