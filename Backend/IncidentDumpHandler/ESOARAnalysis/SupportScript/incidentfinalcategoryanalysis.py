@@ -204,6 +204,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 pid.correlated_event,
                 pid.autoheal_category,
                 pid.eso_analysis,
+                pid.eso_category,
                 pid.final_category
             FROM
                 input_incident_data AS iid
@@ -382,12 +383,12 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '18', 'message' : str(error)}
 
-        # generating "final_category" view:S19
+        # generating "eso_category" view:S19
         try:
-            # define column indexes
-            final_category_index = 22
+            # define column index for "eso_category"
+            eso_category_index = 22
 
-            # define priority order for "final_category"
+            # define priority order for "eso_category"
             priority_columns = [
                 ('cancelled_ticket', cancelled_ticket_index),
                 ('parent_child_event', parent_child_event_index),
@@ -411,43 +412,88 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 category_found = False
                 for column_name, column_index in priority_columns:
                     if str(row_list[column_index]).strip().lower() == 'yes':
-                        row_list[final_category_index] = column_name
+                        row_list[eso_category_index] = column_name
                         category_found = True
                         break
 
                 # if no priority column has "Yes", set to 'N/A'
                 if not category_found:
-                    row_list[final_category_index] = 'N/A'
+                    row_list[eso_category_index] = 'N/A'
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed.')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data ESO-Category Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '19', 'message' : str(error)}
 
-        # re-order column for data insertion:S20
+        # generating "final_category" view:S20
+        try:
+            # define column indexes
+            bot_availability_index = 8
+            final_category_index = 23
+
+            # define required sets for "elimination" and "standardization" columns
+            elimination_columns = [
+                cancelled_ticket_index,
+                parent_child_event_index,
+                sequence_event_index,
+                deduplicate_event_index,
+                correlated_event_index,
+                conector_down_index,
+                short_duration_ticket_index
+            ]
+            standardization_columns = [blank_ci_index]
+
+            # loop through all rows
+            for i, data_row in enumerate(to_be_processed_data):
+                # convert tuple to list to modify
+                row_list = list(data_row)
+
+                # check "Elimination"
+                if any(str(row_list[idx]).strip().lower() == 'yes' for idx in elimination_columns):
+                    row_list[final_category_index] = 'Elimination'
+                # check "Standardization"
+                elif any(str(row_list[idx]).strip().lower() == 'yes' for idx in standardization_columns):
+                    row_list[final_category_index] = 'Standardization'
+                # check "Automation"
+                elif (((str(row_list[resolved_type_index]).strip().lower()) == 'user') and ((str(row_list[bot_availability_index]).strip().lower()) == 'yes')):
+                    row_list[final_category_index] = 'Automation'
+                # check "Exploratory"
+                else:
+                    row_list[final_category_index] = 'Exploratory'
+
+                # replace modified row
+                to_be_processed_data[i] = tuple(row_list)
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '20', status = 'SUCCESS', message = f'For Account Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed')
+        except Exception as error:
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '20', status = 'ERROR', message = str(error))
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '20', 'message' : str(error)}
+
+        # re-order column for data insertion:S21
         try:
             for data_row in to_be_processed_data:
                 total_count += 1
                 # appending data into "processed_data_insert_rows" empty list
                 processed_data_insert_rows.append((
-                    data_row[0], # ticket_number
-                    data_row[3], # assignment_group_category
-                    data_row[6], # resolved_type
+                    data_row[0],  # ticket_number
+                    data_row[3],  # assignment_group_category
+                    data_row[6],  # resolved_type
                     data_row[20], # autoheal_category
                     data_row[21], # eso_analysis
-                    data_row[22] # final_category
+                    data_row[22], # eso_category
+                    data_row[23]  # final_category
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
                     data_row[0], # ticket_number
                 ))
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Prepared For Upsert Into "processed_incident_data" Table.')
         except Exception as error:
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '20', status = 'ERROR', message = str(error))
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '20', 'message' : str(error)}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'ERROR', message = str(error))
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '21', 'message' : str(error)}
 
-        # inserting normalize data into "processed_incident_data":S21
+        # inserting normalize data into "processed_incident_data":S22
         try:
             data_upsert_sql_for_processed_incident_data_table = '''
             INSERT INTO processed_incident_data (
@@ -456,6 +502,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 resolved_type,
                 autoheal_category,
                 eso_analysis,
+                eso_category,
                 final_category
             )
             VALUES %s
@@ -465,17 +512,18 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 resolved_type               = EXCLUDED.resolved_type,
                 autoheal_category           = EXCLUDED.autoheal_category,
                 eso_analysis                = EXCLUDED.eso_analysis,
+                eso_category                = EXCLUDED.eso_category,
                 final_category              = EXCLUDED.final_category;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table.')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'ERROR', message = str(error))
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '21', 'message' : str(error)}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'ERROR', message = str(error))
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : str(error)}
 
-        # updating "row_status" of "input_incident_data" to "11" after normalized data:S22
+        # updating "row_status" of "input_incident_data" to "11" after normalized data:S23
         try:
             update_row_status_sql_for_input_incident_data_table = '''
             UPDATE input_incident_data AS t
@@ -487,10 +535,10 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table.')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table.')
         except Exception as error:
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'ERROR', message = str(error))
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : str(error)}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '23', status = 'ERROR', message = str(error))
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '23', 'message' : str(error)}
 
-    # sending return message to main script:S23
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '23', 'message' : f'Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table.'}
+    # sending return message to main script:S24
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '24', 'message' : f'Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table.'}

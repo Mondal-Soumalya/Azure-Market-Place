@@ -102,7 +102,8 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             correlated_event VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (correlated_event IN ('Yes','No')),
             autoheal_category VARCHAR(15) NOT NULL DEFAULT 'Non_AutoHeal' CHECK (autoheal_category IN ('Non_AutoHeal','AutoHeal')),
             eso_analysis TEXT NOT NULL DEFAULT 'N/A',
-            final_category VARCHAR(50) NOT NULL DEFAULT 'N/A'
+            eso_category VARCHAR(50) NOT NULL DEFAULT 'N/A',
+            final_category VARCHAR(20) NOT NULL DEFAULT 'N/A' CHECK (final_category IN ('Elimination', 'Standardization', 'Automation', 'Exploratory', 'N/A'))
         );
         ALTER TABLE processed_incident_data OWNER TO {table_owner};'''
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
