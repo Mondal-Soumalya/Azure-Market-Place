@@ -31,7 +31,7 @@ def input_incident_data_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'SUCCESS', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '3', 'message': '"input_incident_data" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '3', 'message': '"input_incident_data" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Input-Incident-Data-Table-Create', 'step': '3', 'message': str(error)}
 

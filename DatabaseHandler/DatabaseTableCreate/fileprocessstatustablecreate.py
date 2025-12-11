@@ -31,7 +31,7 @@ def file_process_status_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(file_process_status_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'SUCCESS', 'file_name': 'Process-Status-Table-Create', 'step': '3', 'message': '"file_process_status" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Process-Status-Table-Create', 'step': '3', 'message': '"file_process_status" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Process-Status-Table-Create', 'step': '3', 'message': str(error)}
 

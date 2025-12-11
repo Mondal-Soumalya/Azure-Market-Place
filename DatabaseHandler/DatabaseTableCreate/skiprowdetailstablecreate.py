@@ -31,7 +31,7 @@ def skip_row_details_table_create(db_name: str, db_user: str, db_password: str, 
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(skip_row_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'SUCCESS', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '3', 'message': '"skip_row_details" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '3', 'message': '"skip_row_details" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Skip-Row-Details-Table-Create', 'step': '3', 'message': str(error)}
 

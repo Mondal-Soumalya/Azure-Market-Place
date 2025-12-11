@@ -31,7 +31,7 @@ def submitted_file_details_table_create(db_name: str, db_user: str, db_password:
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(submitted_file_details_table_present_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'SUCCESS', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '3', 'message': '"submitted_file_details" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '3', 'message': '"submitted_file_details" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Submitted-File-Details-Table-Create', 'step': '3', 'message': str(error)}
 

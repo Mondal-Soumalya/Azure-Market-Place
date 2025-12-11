@@ -31,7 +31,7 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'SUCCESS', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '3', 'message': '"processed_incident_data" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '3', 'message': '"processed_incident_data" Table Already Present'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Processed-Incident-Data-Table-Create', 'step': '3', 'message': str(error)}
 
