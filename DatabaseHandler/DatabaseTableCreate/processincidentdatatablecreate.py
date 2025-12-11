@@ -83,12 +83,12 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             ticket_mttr_hours INTEGER NOT NULL DEFAULT 0,
             ticket_mttr_minutes INTEGER NOT NULL DEFAULT 0,
             ticket_mttr_seconds INTEGER NOT NULL DEFAULT 0,
-            ticket_mttr_minutes_bucket VARCHAR(10) NOT NULL DEFAULT '0-5' CHECK (ticket_mttr_minutes_bucket IN ('0-5','5-10','10-20','20-30','>30')),
+            ticket_mttr_hours_bucket VARCHAR(10) NOT NULL DEFAULT '0-2' CHECK (ticket_mttr_hours_bucket IN ('0-2','2-8','8-24','24-36','36-72','>72')),
             ticket_aging_days INTEGER NOT NULL DEFAULT 0,
             ticket_aging_hours INTEGER NOT NULL DEFAULT 0,
             ticket_aging_minutes INTEGER NOT NULL DEFAULT 0,
             ticket_aging_seconds INTEGER NOT NULL DEFAULT 0,
-            ticket_aging_minutes_bucket VARCHAR(10) NOT NULL DEFAULT '0-5' CHECK (ticket_aging_minutes_bucket IN ('0-5','5-10','10-20','20-30','>30')),
+            ticket_aging_hours_bucket VARCHAR(10) NOT NULL DEFAULT '0-2' CHECK (ticket_aging_hours_bucket IN ('0-2','2-8','8-24','24-36','36-72','>72')),
             cancelled_ticket VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (cancelled_ticket IN ('Yes','No')),
             connector_down VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (connector_down IN ('Yes','No')),
             flapping_event VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (flapping_event IN ('Yes','No')),
@@ -102,7 +102,7 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
             correlated_event VARCHAR(3) NOT NULL DEFAULT 'No' CHECK (correlated_event IN ('Yes','No')),
             autoheal_category VARCHAR(15) NOT NULL DEFAULT 'Non_AutoHeal' CHECK (autoheal_category IN ('Non_AutoHeal','AutoHeal')),
             eso_analysis TEXT NOT NULL DEFAULT 'N/A',
-            final_category VARCHAR(20) NOT NULL DEFAULT 'N/A' CHECK (final_category IN ('Elimination','Standardization','Automation','Exploratory','N/A'))
+            final_category VARCHAR(50) NOT NULL DEFAULT 'N/A'
         );
         ALTER TABLE processed_incident_data OWNER TO {table_owner};'''
         with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore

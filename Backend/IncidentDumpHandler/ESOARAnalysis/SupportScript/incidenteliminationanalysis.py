@@ -195,7 +195,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 pid.ticket_mttr_days,
                 pid.ticket_mttr_hours,
                 pid.ticket_mttr_minutes,
-                pid.ticket_mttr_minutes_bucket
+                pid.ticket_mttr_hours_bucket
             FROM
                 input_incident_data AS iid
             JOIN
@@ -341,7 +341,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             # define valid "short-duration-ticket" buckets
             short_duration_ticket_buckets = {'0-5', '5-10'}
             # create "short_duration_ticket" column
-            ticket_dataframe['short_duration_ticket'] = ticket_dataframe['ticket_mttr_minutes_bucket'].apply(lambda x: 'Yes' if x in short_duration_ticket_buckets else 'No')
+            ticket_dataframe['short_duration_ticket'] = ticket_dataframe['ticket_mttr_hours_bucket'].apply(lambda x: 'Yes' if x in short_duration_ticket_buckets else 'No')
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Short Duration Ticket Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'ERROR', message = str(error))

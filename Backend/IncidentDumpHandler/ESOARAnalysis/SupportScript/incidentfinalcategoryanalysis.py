@@ -120,7 +120,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 auto_resolved_keywords = [line.strip().lower() for line in blank_ci_keywords_file if line.strip()]
                 log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'SUCCESS', message = '"AutoResolvedKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
-            auto_resolved_keywords = ['splunk']
+            auto_resolved_keywords = ['splunk', 'asrengineer', 'awsautomation', 'dopintegration', 'rmiautomationuser']
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'ERROR', message = '"AutoResolvedKeywords.txt" File Not Present.')
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '10', 'message' : '"AutoResolvedKeywords.txt" File Not Present.'}
     except Exception as error:
@@ -385,38 +385,39 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
         # generating "final_category" view:S19
         try:
             # define column indexes
-            bot_availability_index = 8
             final_category_index = 22
 
-            # define required sets for "elimination" and "standardization" columns
-            elimination_columns = [
-                cancelled_ticket_index,
-                parent_child_event_index,
-                sequence_event_index,
-                deduplicate_event_index,
-                correlated_event_index,
-                conector_down_index,
-                short_duration_ticket_index
+            # define priority order for "final_category"
+            priority_columns = [
+                ('cancelled_ticket', cancelled_ticket_index),
+                ('parent_child_event', parent_child_event_index),
+                ('sequence_event', sequence_event_index),
+                ('duplicate_event', duplicate_event_index),
+                ('deduplicate_event', deduplicate_event_index),
+                ('periodic_event', periodic_event_index),
+                ('flapping_event', flapping_event_index),
+                ('correlated_event', correlated_event_index),
+                ('connector_down', conector_down_index),
+                ('short_duration_ticket', short_duration_ticket_index),
+                ('blank_ci', blank_ci_index)
             ]
-            standardization_columns = [blank_ci_index]
 
             # loop through all rows
             for i, data_row in enumerate(to_be_processed_data):
                 # convert tuple to list to modify
                 row_list = list(data_row)
 
-                # check "Elimination"
-                if any(str(row_list[idx]).strip().lower() == 'yes' for idx in elimination_columns):
-                    row_list[final_category_index] = 'Elimination'
-                # check "Standardization"
-                elif any(str(row_list[idx]).strip().lower() == 'yes' for idx in standardization_columns):
-                    row_list[final_category_index] = 'Standardization'
-                # check "Automation"
-                elif (((str(row_list[resolved_type_index]).strip().lower()) == 'user') and ((str(row_list[bot_availability_index]).strip().lower()) == 'yes')):
-                    row_list[final_category_index] = 'Automation'
-                # check "Exploratory"
-                else:
-                    row_list[final_category_index] = 'Exploratory'
+                # check priority columns in order
+                category_found = False
+                for column_name, column_index in priority_columns:
+                    if str(row_list[column_index]).strip().lower() == 'yes':
+                        row_list[final_category_index] = column_name
+                        category_found = True
+                        break
+
+                # if no priority column has "Yes", set to 'N/A'
+                if not category_found:
+                    row_list[final_category_index] = 'N/A'
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)

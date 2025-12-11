@@ -167,12 +167,12 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                 pid.ticket_mttr_hours,
                 pid.ticket_mttr_minutes,
                 pid.ticket_mttr_seconds,
-                pid.ticket_mttr_minutes_bucket,
+                pid.ticket_mttr_hours_bucket,
                 pid.ticket_aging_days,
                 pid.ticket_aging_hours,
                 pid.ticket_aging_minutes,
                 pid.ticket_aging_seconds,
-                pid.ticket_aging_minutes_bucket
+                pid.ticket_aging_hours_bucket
             FROM
                 input_incident_data iid
             JOIN
@@ -206,12 +206,12 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
             ticket_mttr_hours_index = 4
             ticket_mttr_minutes_index = 5
             ticket_mttr_seconds_index = 6
-            ticket_mttr_minutes_bucket_index = 7
+            ticket_mttr_hours_bucket_index = 7
             ticket_aging_days_index = 8
             ticket_aging_hours_index = 9
             ticket_aging_minutes_index = 10
             ticket_aging_seconds_index = 11
-            ticket_aging_minutes_bucket_index = 12
+            ticket_aging_hours_bucket_index = 12
 
             # loop through all the rows
             for i, data_row in enumerate(to_be_processed_data):
@@ -242,17 +242,19 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                     row_list[ticket_mttr_minutes_index] = max(0, (int(math.ceil(mttr_in_seconds / 60))))
                     row_list[ticket_mttr_seconds_index] = max(0, int(mttr_in_seconds))
 
-                    # "MTTR" bucket categorization with minutes
-                    if (0 <= int(row_list[ticket_mttr_minutes_index]) <= 5):
-                        row_list[ticket_mttr_minutes_bucket_index] = '0-5'
-                    elif (5 < int(row_list[ticket_mttr_minutes_index]) <= 10):
-                        row_list[ticket_mttr_minutes_bucket_index] = '5-10'
-                    elif (10 < int(row_list[ticket_mttr_minutes_index]) <= 20):
-                        row_list[ticket_mttr_minutes_bucket_index] = '10-20'
-                    elif (20 < int(row_list[ticket_mttr_minutes_index]) <= 30):
-                        row_list[ticket_mttr_minutes_bucket_index] = '20-30'
+                    # "MTTR" bucket categorization using hours (direct int(row_list[...] ) usage)
+                    if int(row_list[ticket_mttr_hours_index]) <= 2:
+                        row_list[ticket_mttr_hours_bucket_index] = '0-2'
+                    elif int(row_list[ticket_mttr_hours_index]) <= 8:
+                        row_list[ticket_mttr_hours_bucket_index] = '2-8'
+                    elif int(row_list[ticket_mttr_hours_index]) <= 24:
+                        row_list[ticket_mttr_hours_bucket_index] = '8-24'
+                    elif int(row_list[ticket_mttr_hours_index]) <= 36:
+                        row_list[ticket_mttr_hours_bucket_index] = '24-36'
+                    elif int(row_list[ticket_mttr_hours_index]) <= 72:
+                        row_list[ticket_mttr_hours_bucket_index] = '36-72'
                     else:
-                        row_list[ticket_mttr_minutes_bucket_index] = '>30'
+                        row_list[ticket_mttr_hours_bucket_index] = '>72'
 
                     # ==================== "Aging" Calculation ==================== #
                     # calculate "Ageing" excluding weekends
@@ -264,17 +266,19 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                     row_list[ticket_aging_minutes_index] = max(0, (int(math.ceil(ageing_in_seconds / 60))))
                     row_list[ticket_aging_seconds_index] = max(0, int(ageing_in_seconds))
 
-                    # "Aging" bucket categorization with minutes
-                    if (0 <= int(row_list[ticket_aging_minutes_index]) <= 5):
-                        row_list[ticket_aging_minutes_bucket_index] = '0-5'
-                    elif (5 < int(row_list[ticket_aging_minutes_index]) <= 10):
-                        row_list[ticket_aging_minutes_bucket_index] = '5-10'
-                    elif (10 < int(row_list[ticket_aging_minutes_index]) <= 20):
-                        row_list[ticket_aging_minutes_bucket_index] = '10-20'
-                    elif (20 < int(row_list[ticket_aging_minutes_index]) <= 30):
-                        row_list[ticket_aging_minutes_bucket_index] = '20-30'
+                    # "Aging" bucket categorization using hours (direct int(row_list[...] ) usage)
+                    if int(row_list[ticket_aging_hours_index]) <= 2:
+                        row_list[ticket_aging_hours_bucket_index] = '0-2'
+                    elif int(row_list[ticket_aging_hours_index]) <= 8:
+                        row_list[ticket_aging_hours_bucket_index] = '2-8'
+                    elif int(row_list[ticket_aging_hours_index]) <= 24:
+                        row_list[ticket_aging_hours_bucket_index] = '8-24'
+                    elif int(row_list[ticket_aging_hours_index]) <= 36:
+                        row_list[ticket_aging_hours_bucket_index] = '24-36'
+                    elif int(row_list[ticket_aging_hours_index]) <= 72:
+                        row_list[ticket_aging_hours_bucket_index] = '36-72'
                     else:
-                        row_list[ticket_aging_minutes_bucket_index] = '>30'
+                        row_list[ticket_aging_hours_bucket_index] = '>72'
 
                     # replace modified row
                     to_be_processed_data[i] = tuple(row_list)
@@ -294,12 +298,12 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                     data_row[4], # ticket_mtrr_hours
                     data_row[5], # ticket_mttr_minutes
                     data_row[6], # ticket_mttr_seconds
-                    data_row[7], # ticket_mttr_minutes_bucket
+                    data_row[7], # ticket_mttr_hours_bucket
                     data_row[8], # ticket_aging_days
                     data_row[9], # ticket_aging_hours
                     data_row[10], # ticket_aging_minutes
                     data_row[11], # ticket_aging_seconds
-                    data_row[12] # ticket_aging_minutes_bucket
+                    data_row[12] # ticket_aging_hours_bucket
                 ))
                 # appending data into "input_data_update_row" empty list
                 input_data_update_row.append((
@@ -318,12 +322,12 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                 ticket_mttr_hours,
                 ticket_mttr_minutes,
                 ticket_mttr_seconds,
-                ticket_mttr_minutes_bucket,
+                ticket_mttr_hours_bucket,
                 ticket_aging_days,
                 ticket_aging_hours,
                 ticket_aging_minutes,
                 ticket_aging_seconds,
-                ticket_aging_minutes_bucket
+                ticket_aging_hours_bucket
             )
             VALUES %s
             ON CONFLICT (ticket_number)
@@ -332,12 +336,12 @@ def incident_mttr_aging_analysis() -> dict[str, str]: #type: ignore
                 ticket_mttr_hours           = EXCLUDED.ticket_mttr_hours,
                 ticket_mttr_minutes         = EXCLUDED.ticket_mttr_minutes,
                 ticket_mttr_seconds         = EXCLUDED.ticket_mttr_seconds,
-                ticket_mttr_minutes_bucket  = EXCLUDED.ticket_mttr_minutes_bucket,
+                ticket_mttr_hours_bucket    = EXCLUDED.ticket_mttr_hours_bucket,
                 ticket_aging_days           = EXCLUDED.ticket_aging_days,
                 ticket_aging_hours          = EXCLUDED.ticket_aging_hours,
                 ticket_aging_minutes        = EXCLUDED.ticket_aging_minutes,
                 ticket_aging_seconds        = EXCLUDED.ticket_aging_seconds,
-                ticket_aging_minutes_bucket = EXCLUDED.ticket_aging_minutes_bucket;'''
+                ticket_aging_hours_bucket   = EXCLUDED.ticket_aging_hours_bucket;'''
             with psycopg2.connect(**database_connection_parameter) as database_connection: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
