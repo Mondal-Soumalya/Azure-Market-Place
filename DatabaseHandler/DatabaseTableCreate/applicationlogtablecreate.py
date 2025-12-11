@@ -31,7 +31,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(application_log_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'INFO', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': '"application_log" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': '"application_log" Table Already Present.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '3', 'message': str(error)}
 
@@ -66,7 +66,7 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(application_log_table_present_check_sql)
                 if (not (database_cursor.fetchone()[0])):
-                    return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '5', 'message': 'Table Not Created'}
+                    return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '5', 'message': 'Table Not Created.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '5', 'message': str(error)}
 
@@ -107,6 +107,6 @@ def application_log_table_create(db_name: str, db_user: str, db_password: str, d
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Application-Log-Table-Create', 'step': '7', 'message': '"application_log" Table Created With Auto-Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Application-Log-Table-Create', 'step': '7', 'message': '"application_log" Table Created With Auto-Trigger Function.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Application-Log-Table-Create', 'step': '7', 'message': str(error)}

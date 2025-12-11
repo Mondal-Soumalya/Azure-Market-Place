@@ -32,7 +32,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
-        log_writer(script_name = 'Incident-ESOAR-Process', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-ESOAR-Process', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '4', 'message' : str(error)}
@@ -40,10 +40,10 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '5', 'message' : str(error)}
@@ -51,7 +51,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-ESOAR-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-ESOAR-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '6', 'message' : str(error)}
@@ -65,7 +65,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-ESOAR-Process', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-ESOAR-Process', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '7', 'message' : str(error)}
@@ -82,10 +82,10 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(file_process_status_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'SUCCESS', message = '"file_process_status" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'SUCCESS', message = '"file_process_status" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'ERROR', message = '"file_process_status" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '8', 'message' : '"file_process_status" Table Not Present'}
+                    log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'ERROR', message = '"file_process_status" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '8', 'message' : '"file_process_status" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '8', 'message' : str(error)}
@@ -103,7 +103,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
         mttr_aging_analysis_process_start_time = time.time()
         mttr_aging_analysis_backend_response = incident_mttr_aging_analysis()
         if (mttr_aging_analysis_backend_response != None):
-            log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'INFO', message = f'MTTR And Aging Backend Process Response Generate')
+            log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'INFO', message = f'MTTR And Aging Backend Process Response Generated.')
         mttr_aging_analysis_process_end_time = time.time()
     except Exception as error:
         log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-B', status = 'ERROR', message = str(error))
@@ -138,11 +138,11 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                         database_connection.rollback()
-                        return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : f'MTTR Analysis Process Not Completed'}
+                        return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : f'MTTR Analysis Process Not Completed.'}
                     else:
                         MTTR_AGING_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'SUCCESS', message = f'MTTR Analysis Process Completed')
+                        log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'SUCCESS', message = f'MTTR Analysis Process Completed.')
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '9-D', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '9-D', 'message' : str(error)}
@@ -162,7 +162,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             elimination_analysis_process_start_time = time.time()
             elimination_analysis_backend_process = incident_elimination_analysis()
             if (elimination_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'INFO', message = f'Elimination Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'INFO', message = f'Elimination Analysis Backend Process Response Generated.')
             elimination_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-B', status = 'ERROR', message = str(error))
@@ -197,11 +197,11 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : f'Elimination Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : f'Elimination Analysis Process Not Completed.'}
                         else:
                             ELIMINATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'SUCCESS', message = f'Elimination Analysis Process Completed')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'SUCCESS', message = f'Elimination Analysis Process Completed.')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '10-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '10-D', 'message' : str(error)}
@@ -221,7 +221,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             standardization_analysis_process_start_time = time.time()
             standardization_analysis_backend_process = incident_standardization_analysis()
             if (standardization_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'INFO', message = f'Standardization Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'INFO', message = f'Standardization Analysis Backend Process Response Generated.')
             standardization_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-B', status = 'ERROR', message = str(error))
@@ -256,11 +256,11 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : f'Standardization Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : f'Standardization Analysis Process Not Completed.'}
                         else:
                             STANDARDIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'SUCCESS', message = f'Standardization Analysis Process Completed')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'SUCCESS', message = f'Standardization Analysis Process Completed.')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '11-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '11-D', 'message' : str(error)}
@@ -280,7 +280,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             optimization_analysis_process_start_time = time.time()
             optimization_analysis_backend_process = incident_optimization_analysis()
             if (optimization_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'INFO', message = f'Optimization Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'INFO', message = f'Optimization Analysis Backend Process Response Generated.')
             optimization_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-B', status = 'ERROR', message = str(error))
@@ -315,11 +315,11 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : f'Optimization Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : f'Optimization Analysis Process Not Completed.'}
                         else:
                             OPTIMIZATION_ANALYSIS_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'SUCCESS', message = f'Optimization Analysis Process Completed')
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'SUCCESS', message = f'Optimization Analysis Process Completed.')
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '12-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '12-D', 'message' : str(error)}
@@ -339,7 +339,7 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
             final_category_analysis_process_start_time = time.time()
             final_category_analysis_backend_process = incident_final_category_analysis()
             if (final_category_analysis_backend_process != None):
-                log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'INFO', message = f'Final Categroy Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'INFO', message = f'Final Categroy Analysis Backend Process Response Generated.')
             final_category_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-B', status = 'ERROR', message = str(error))
@@ -372,11 +372,11 @@ def incident_esoar_process(file_unique_id: str) -> dict[str, str]: #type: ignore
                         # check if data inserted or not
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             database_connection.rollback()
-                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Not Completed'}
+                            return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Not Completed.'}
                         else:
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'SUCCESS', message = f'Final Category Analysis Process Completed')
-                            return {'status' : 'SUCCESS', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Completed'}
+                            log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'SUCCESS', message = f'Final Category Analysis Process Completed.')
+                            return {'status' : 'SUCCESS', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : f'Final Category Analysis Process Completed.'}
             except Exception as error:
                 log_writer(script_name = 'Incident-ESOAR-Process', steps = '13-D', status = 'ERROR', message = str(error))
                 return {'status' : 'ERROR', 'file_name' : 'Incident-ESOAR-Process', 'step' : '13-D', 'message' : str(error)}

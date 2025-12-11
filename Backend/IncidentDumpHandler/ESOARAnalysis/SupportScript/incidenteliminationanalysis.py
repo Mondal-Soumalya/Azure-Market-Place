@@ -36,7 +36,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
         reference_data_folder_path = Path(support_script_folder_path) / 'ReferenceData'
         connector_down_category_keywords_file_path = Path(reference_data_folder_path) / 'ConnectorDownCategoryKeywords.txt'
         connector_down_keywords_file_path = Path(reference_data_folder_path) / 'ConnectorDownKeywords.txt'
-        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '4', 'message' : str(error)}
@@ -44,10 +44,10 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '5', 'message' : str(error)}
@@ -55,7 +55,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '6', 'message' : str(error)}
@@ -69,7 +69,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Elimination-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '7', 'message' : str(error)}
@@ -86,10 +86,10 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '8', 'message' : str(error)}
@@ -106,10 +106,10 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '9', 'message' : str(error)}
@@ -119,11 +119,11 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
         if ((connector_down_category_keywords_file_path.exists()) and (connector_down_category_keywords_file_path.is_file()) and (connector_down_category_keywords_file_path.suffix.lower() == '.txt')):
             with open(connector_down_category_keywords_file_path, 'r', encoding = 'utf-8') as connector_down_category_keywords_file:
                 connector_category_keywords = [line.strip().lower() for line in connector_down_category_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Elimination-Analysis', steps = '10', status = 'SUCCESS', message = '"ConnectorDownCategoryKeywords.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Elimination-Analysis', steps = '10', status = 'SUCCESS', message = '"ConnectorDownCategoryKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
             connector_category_keywords = ['monitoring']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '10', status = 'ERROR', message = '"ConnectorDownCategoryKeywords.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '10', 'message' : '"ConnectorDownCategoryKeywords.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '10', status = 'ERROR', message = '"ConnectorDownCategoryKeywords.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '10', 'message' : '"ConnectorDownCategoryKeywords.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '10', 'message' : str(error)}
@@ -133,11 +133,11 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
         if ((connector_down_keywords_file_path.exists()) and (connector_down_keywords_file_path.is_file()) and (connector_down_keywords_file_path.suffix.lower() == '.txt')):
             with open(connector_down_keywords_file_path, 'r', encoding = 'utf-8') as connector_down_keywords_file:
                 connector_keywords = [line.strip().lower() for line in connector_down_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Elimination-Analysis', steps = '11', status = 'SUCCESS', message = '"ConnectorDownKeywords.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Elimination-Analysis', steps = '11', status = 'SUCCESS', message = '"ConnectorDownKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
             connector_keywords = ['node', 'down']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '11', status = 'ERROR', message = '"ConnectorDownKeywords.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '11', 'message' : '"ConnectorDownKeywords.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '11', status = 'ERROR', message = '"ConnectorDownKeywords.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '11', 'message' : '"ConnectorDownKeywords.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Elimination-Analysis', steps = '11', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '11', 'message' : str(error)}
@@ -229,7 +229,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 datetime(1970, 1, 1, tzinfo = timezone.utc)
             ]
             ticket_dataframe = pandas.DataFrame(to_be_processed_data, columns = database_column_names)
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Pandas Dataframe Created For Processing')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Pandas Dataframe Created For Processing.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '15', 'message' : str(error)}
@@ -240,7 +240,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             ticket_dataframe['normalized_state'] = ticket_dataframe['state'].apply(normalize_text)
             # create "cancelled_ticket" column using inline regex
             ticket_dataframe['cancelled_ticket'] = ticket_dataframe['normalized_state'].apply(lambda x: 'Yes' if re.search(r'cancel', x, re.IGNORECASE) else 'No')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Cancelled Ticket Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Cancelled Ticket Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '16', 'message' : str(error)}
@@ -277,8 +277,8 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
 
                 # push results back to main dataframe
                 ticket_dataframe.loc[connector_valid_df.index, 'connector_down'] = connector_valid_df['connector_down']
-            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int((~ticket_dataframe["is_connector_valid"]).sum())}-Rows Of Data Skipped For Connector Down Analysis')
-            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int(ticket_dataframe["is_connector_valid"].sum())}-Rows Of Data Processed For Connector Down Analysis')
+            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int((~ticket_dataframe["is_connector_valid"]).sum())}-Rows Of Data Skipped For Connector Down Analysis.')
+            log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='SUCCESS', message=f'Total {int(ticket_dataframe["is_connector_valid"].sum())}-Rows Of Data Processed For Connector Down Analysis.')
         except Exception as error:
             log_writer(script_name='Incident-Elimination-Analysis', steps='17', status='ERROR', message=str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '17', 'message': str(error)}
@@ -330,8 +330,8 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 )
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'flapping_event'] = valid_df['flapping_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_flapping_valid"]).sum())}-Rows Of Data Skipped For Flapping Event Analysis')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_flapping_valid"].sum())}-Rows Of Data Processed For Flapping Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_flapping_valid"]).sum())}-Rows Of Data Skipped For Flapping Event Analysis.')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_flapping_valid"].sum())}-Rows Of Data Processed For Flapping Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '18', 'message': str(error)}
@@ -342,7 +342,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
             short_duration_ticket_buckets = {'0-5', '5-10'}
             # create "short_duration_ticket" column
             ticket_dataframe['short_duration_ticket'] = ticket_dataframe['ticket_mttr_minutes_bucket'].apply(lambda x: 'Yes' if x in short_duration_ticket_buckets else 'No')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Short Duration Ticket Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(ticket_dataframe))}-Rows Of Data Processed For Short Duration Ticket Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '19', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '19', 'message': str(error)}
@@ -379,8 +379,8 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 valid_df['sequence_event'] = ['Yes' if x > 1 else 'No' for x in sequence_event_counts_minute]
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'sequence_event'] = valid_df['sequence_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_sequence_valis"]).sum())}-Rows Of Data Skipped For Sequence Event Analysis')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_sequence_valis"].sum())}-Rows Of Data Processed For Sequence Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_sequence_valis"]).sum())}-Rows Of Data Skipped For Sequence Event Analysis.')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_sequence_valis"].sum())}-Rows Of Data Processed For Sequence Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '20', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '20', 'message' : str(error)}
@@ -416,8 +416,8 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 valid_df['periodic_event'] = periodic_event_mask.apply(lambda x: 'Yes' if x else 'No')
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'periodic_event'] = valid_df['periodic_event']
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_periodic_valid"]).sum())}-Rows Of Data Skipped For Periodic Event Analysis')
-            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_periodic_valid"].sum())}-Rows Of Data Processed For Periodic Event Analysis')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_periodic_valid"]).sum())}-Rows Of Data Skipped For Periodic Event Analysis.')
+            log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_periodic_valid"].sum())}-Rows Of Data Processed For Periodic Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '21', 'message' : str(error)}
@@ -472,7 +472,7 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table_sql, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '23', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Elimination-Analysis', 'step': '23', 'message': str(error)}
@@ -489,10 +489,10 @@ def incident_elimination_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "8" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "8" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Elimination-Analysis', steps = '24', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '24', 'message' : str(error)}
 
     # sending return message to main script:S25
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '25', 'message' : f'Total {total_count}-Rows Of Data Elimination Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Elimination-Analysis', 'step' : '25', 'message' : f'Total {total_count}-Rows Of Data Elimination Analysis Completed And Updated Into "input_incident_data" Table.'}

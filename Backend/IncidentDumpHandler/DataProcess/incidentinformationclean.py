@@ -33,7 +33,7 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
         data_process_folder_path = Path(incident_dump_handler_folder_path) / 'DataProcess'
         reference_data_folder_path = Path(data_process_folder_path) / 'ReferenceData'
         information_clean_pattern_json_file_path = Path(reference_data_folder_path) / 'InformationCleanPattern.json'
-        log_writer(script_name = 'Incident-Information-Clean', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Information-Clean', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '4', 'message' : str(error)}
@@ -41,10 +41,10 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Information-Clean', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Information-Clean', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Information-Clean', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Information-Clean', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '5', 'message' : str(error)}
@@ -52,7 +52,7 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Information-Clean', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Information-Clean', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '6', 'message' : str(error)}
@@ -66,7 +66,7 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Information-Clean', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Information-Clean', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '7', 'message' : str(error)}
@@ -83,10 +83,10 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '8', 'message' : str(error)}
@@ -103,10 +103,10 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '9', 'message' : str(error)}
@@ -114,10 +114,10 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
     # check if "InformationCleanPattern.json" file is present:S10
     try:
         if ((information_clean_pattern_json_file_path.exists()) and (information_clean_pattern_json_file_path.is_file()) and (information_clean_pattern_json_file_path.suffix.lower() == '.json')):
-            log_writer(script_name = 'Incident-Information-Clean', steps = '10', status = 'SUCCESS', message = '"InformationCleanPattern.json" File Is Present')
+            log_writer(script_name = 'Incident-Information-Clean', steps = '10', status = 'SUCCESS', message = '"InformationCleanPattern.json" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Information-Clean', steps = '10', status = 'ERROR', message = '"InformationCleanPattern.json" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '10', 'message' : '"InformationCleanPattern.json" File Not Present'}
+            log_writer(script_name = 'Incident-Information-Clean', steps = '10', status = 'ERROR', message = '"InformationCleanPattern.json" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '10', 'message' : '"InformationCleanPattern.json" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '10', 'message' : str(error)}
@@ -126,10 +126,10 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
     try:
         with open(str(information_clean_pattern_json_file_path), 'r') as pattern_file:
             json_file_pattern_dict = json.load(pattern_file)
-            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'SUCCESS', message = '"InformationCleanPattern.json" File Loaded Into Script')
+            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'SUCCESS', message = '"InformationCleanPattern.json" File Loaded Into Script.')
         # check if any pattern present
         if (json_file_pattern_dict):
-            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'SUCCESS', message = f'Total: {len(json_file_pattern_dict)} Information Clean Pattern Present Inside "InformationCleanPattern.json" File')
+            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'SUCCESS', message = f'Total: {len(json_file_pattern_dict)} Information Clean Pattern Present Inside "InformationCleanPattern.json" File.')
             regexes_flag_map = {
                 'IGNORECASE' : re.IGNORECASE,
                 'DOTALL' : re.DOTALL,
@@ -145,8 +145,8 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
                     regexes_flag_value |= regexes_flag_map.get(flag_name, 0)
                 information_clean_pattern[name] = re.compile(pattern_string, regexes_flag_value)
         else:
-            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'ERROR', message = 'No Information Clean Pattern Present Inside "InformationCleanPattern.json" File')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '11', 'message' : 'No Information Clean Pattern Present Inside "InformationCleanPattern.json" File'}
+            log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'ERROR', message = 'No Information Clean Pattern Present Inside "InformationCleanPattern.json" File.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '11', 'message' : 'No Information Clean Pattern Present Inside "InformationCleanPattern.json" File.'}
     except json.JSONDecodeError as json_error:
         log_writer(script_name = 'Incident-Information-Clean', steps = '11', status = 'ERROR', message = str(json_error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '11', 'message' : str(json_error)}
@@ -177,9 +177,9 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Information-Clean', steps = '12', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Information Clean Process')
+                        log_writer(script_name = 'Incident-Information-Clean', steps = '12', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Information Clean Process.')
                     else:
-                        log_writer(script_name = 'Incident-Information-Clean', steps = '12', status = 'INFO', message = f'No New Rows Present For Information Clean Process')
+                        log_writer(script_name = 'Incident-Information-Clean', steps = '12', status = 'INFO', message = f'No New Rows Present For Information Clean Process.')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Information-Clean', steps = '12', status = 'ERROR', message = str(error))
@@ -299,7 +299,7 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Information-Clean', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '15', 'message' : str(error)}
@@ -316,7 +316,7 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "4" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "4" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Information-Clean', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '16', 'message' : str(error)}
@@ -340,11 +340,11 @@ def incident_information_clean() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, token_count_details_upsert_sql, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Information-Clean', steps = '17', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "token_count_details" Table')
+                    log_writer(script_name = 'Incident-Information-Clean', steps = '17', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "token_count_details" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Information-Clean', steps = '17', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Information-Clean', 'step' : '17', 'message' : str(error)}
 
     # sending return message to main script:S18
-    log_writer(script_name = 'Incident-Information-Clean', steps = '18', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Data Information Clean And Updated Into "input_incident_data" Table')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Information-Clean', 'step' : '18', 'message' : f'Total {total_count}-Rows Of Data Information Clean And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Information-Clean', steps = '18', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Data Information Clean And Updated Into "input_incident_data" Table.')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Information-Clean', 'step' : '18', 'message' : f'Total {total_count}-Rows Of Data Information Clean And Updated Into "input_incident_data" Table.'}

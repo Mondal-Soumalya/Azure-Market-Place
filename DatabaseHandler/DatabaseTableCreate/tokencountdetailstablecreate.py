@@ -31,7 +31,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(token_count_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    return {'status': 'INFO', 'file_name': 'Token-Count-Details-Table-Create', 'step': '3','message': '"token_count_details" Table Already Present'}
+                    return {'status': 'INFO', 'file_name': 'Token-Count-Details-Table-Create', 'step': '3','message': '"token_count_details" Table Already Present.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '3', 'message': str(error)}
 
@@ -69,7 +69,7 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(verify_sql)
                 if (not (database_cursor.fetchone()[0])):
-                    return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '5', 'message': 'Table Not Created'}
+                    return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '5', 'message': 'Table Not Created.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '5', 'message': str(error)}
 
@@ -131,6 +131,6 @@ def token_count_details_table_create(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(trigger_definition_sql)
                 database_connection.commit()
-                return {'status': 'SUCCESS', 'file_name': 'Token-Count-Details-Table-Create', 'step': '7', 'message': '"token_count_details" Table Created With Auto-Trigger Function'}
+                return {'status': 'SUCCESS', 'file_name': 'Token-Count-Details-Table-Create', 'step': '7', 'message': '"token_count_details" Table Created With Auto-Trigger Function.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'Token-Count-Details-Table-Create', 'step': '7', 'message': str(error)}

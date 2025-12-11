@@ -35,7 +35,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
         support_script_folder_path = Path(esoar_analysis_folder_path) / 'SupportScript'
         reference_data_folder_path = Path(support_script_folder_path) / 'ReferenceData'
         deduplicate_event_state_keywords_file_path = Path(reference_data_folder_path) / 'DeDuplicateEventStateKeywords.txt'
-        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '4', 'message' : str(error)}
@@ -43,10 +43,10 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '5', 'message' : str(error)}
@@ -54,7 +54,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '6', 'message' : str(error)}
@@ -68,7 +68,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '7', 'message' : str(error)}
@@ -85,10 +85,10 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '8', 'message' : str(error)}
@@ -105,10 +105,10 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '9', 'message' : str(error)}
@@ -118,11 +118,11 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
         if ((deduplicate_event_state_keywords_file_path.exists()) and (deduplicate_event_state_keywords_file_path.is_file()) and (deduplicate_event_state_keywords_file_path.suffix.lower() == '.txt')):
             with open(deduplicate_event_state_keywords_file_path, 'r', encoding = 'utf-8') as deduplicate_event_state_keywords_file:
                 state_keywords = [line.strip().lower() for line in deduplicate_event_state_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Optimization-Analysis', steps = '10', status = 'SUCCESS', message = '"DeDuplicateEventStateKeywords.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Optimization-Analysis', steps = '10', status = 'SUCCESS', message = '"DeDuplicateEventStateKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
             state_keywords = ['inprogress', 'onhold', 'new', 'assigned']
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '10', status = 'ERROR', message = '"DeDuplicateEventStateKeywords.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '10', 'message' : '"DeDuplicateEventStateKeywords.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '10', status = 'ERROR', message = '"DeDuplicateEventStateKeywords.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '10', 'message' : '"DeDuplicateEventStateKeywords.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Optimization-Analysis', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '10', 'message' : str(error)}
@@ -195,9 +195,9 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                     database_column_names = [database_field_name[0] for database_field_name in database_cursor.description]
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '13', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Optimization Analysis Process')
+                        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '13', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Fetched For Optimization Analysis Process.')
                     else:
-                        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '13', status = 'INFO', message = f'No New Rows Present For Optimization Analysis Process')
+                        log_writer(script_name = 'Incident-Optimization-Analysis', steps = '13', status = 'INFO', message = f'No New Rows Present For Optimization Analysis Process.')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '13', status = 'ERROR', message = str(error))
@@ -268,7 +268,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, ['duplicate_event']] = valid_df['duplicate_event']
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_duplicate_valid"]).sum())}-Rows Of Data Skipped For Duplicate Event Analysis')
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_duplicate_valid"].sum())}-Rows Of Data Processed For Duplicate Event Analysis')
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_duplicate_valid"].sum())}-Rows Of Data Processed For Duplicate Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '16', 'message' : str(error)}
@@ -310,7 +310,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, ['deduplicate_event']] = valid_df['deduplicate_event']
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_deduplicate_valid"]).sum())}-Rows Of Data Skipped For Deduplicate Event Analysis')
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_deduplicate_valid"].sum())}-Rows Of Data Processed For Deduplicate Event Analysis')
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_deduplicate_valid"].sum())}-Rows Of Data Processed For Deduplicate Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '17', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '17', 'message' : str(error)}
@@ -335,7 +335,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                 # push results back to main dataframe
                 ticket_dataframe.loc[valid_df.index, 'correlated_event'] = valid_df['correlated_event']
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int((~ticket_dataframe["is_correlated_valid"]).sum())}-Rows Of Data Skipped For Correlated Event Analysis')
-            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_correlated_valid"].sum())}-Rows Of Data Processed For Correlated Event Analysis')
+            log_writer(script_name = 'Incident-Optimization-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(ticket_dataframe["is_correlated_valid"].sum())}-Rows Of Data Processed For Correlated Event Analysis.')
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '18', 'message' : str(error)}
@@ -384,7 +384,7 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table_sql, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '20', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '20', status = 'ERROR', message = str(error))
             return {'status': 'ERROR', 'file_name': 'Incident-Optimization-Analysis', 'step': '20', 'message': str(error)}
@@ -401,10 +401,10 @@ def incident_optimization_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "10" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Optimization-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "10" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Optimization-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '21', 'message' : str(error)}
 
     # sending return message to main script:S22
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '22', 'message' : f'Total {total_count}-Rows Of Data Optimization Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Optimization-Analysis', 'step' : '22', 'message' : f'Total {total_count}-Rows Of Data Optimization Analysis Completed And Updated Into "input_incident_data" Table.'}

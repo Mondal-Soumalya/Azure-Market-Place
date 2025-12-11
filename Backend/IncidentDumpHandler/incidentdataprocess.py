@@ -18,25 +18,25 @@ def incident_data_process(file_unique_id: str, file_path: str):
         import psycopg2
         import time
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S1] - {str(error)}')
+        print(f'Error - [Incident-Data-Process:S1] - {str(error)}.')
 
     # appending system path:S2
     try:
         sys.path.append(str(Path.cwd()))
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S2] - {str(error)}')
+        print(f'Error - [Incident-Data-Process:S2] - {str(error)}.')
 
     # importing user define function:S3
     try:
         from Backend.LogHandler.logwriter import log_writer
     except Exception as error:
-        print(f'ERROR - [Incident-Data-Process:S3] - {str(error)}')
+        print(f'Error - [Incident-Data-Process:S3] - {str(error)}.')
 
     # define folder and file path:S4
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
-        log_writer(script_name = 'Incident-Data-Process', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Data-Process', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '4', 'message' : str(error)}
@@ -44,10 +44,10 @@ def incident_data_process(file_unique_id: str, file_path: str):
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '5', 'message' : str(error)}
@@ -55,7 +55,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Data-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Data-Process', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '6', 'message' : str(error)}
@@ -69,7 +69,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Data-Process', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Data-Process', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '7', 'message' : str(error)}
@@ -86,10 +86,10 @@ def incident_data_process(file_unique_id: str, file_path: str):
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(submitted_file_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'SUCCESS', message = '"submitted_file_details" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'SUCCESS', message = '"submitted_file_details" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'ERROR', message = '"submitted_file_details" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '8', 'message' : '"submitted_file_details" Table Not Present'}
+                    log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'ERROR', message = '"submitted_file_details" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '8', 'message' : '"submitted_file_details" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '8', 'message' : str(error)}
@@ -106,10 +106,10 @@ def incident_data_process(file_unique_id: str, file_path: str):
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(file_process_status_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Data-Process', steps = '9', status = 'SUCCESS', message = '"file_process_status" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Data-Process', steps = '9', status = 'SUCCESS', message = '"file_process_status" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Data-Process', steps = '9', status = 'ERROR', message = '"file_process_status" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '9', 'message' : '"file_process_status" Table Not Present'}
+                    log_writer(script_name = 'Incident-Data-Process', steps = '9', status = 'ERROR', message = '"file_process_status" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '9', 'message' : '"file_process_status" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Data-Process', 'step' : '9', 'message' : str(error)}
@@ -126,7 +126,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         incident_column_mapping_process_start_time = time.time()
         incident_column_process_backend_response = incident_column_process(file_path = str(file_path))
         if (incident_column_process_backend_response != None):
-            log_writer(script_name = 'Incident-Data-Process', steps = '10-B', status = 'INFO', message = f'For File: "{Path(file_path).name}" Column Name Mapping Backend Process Response Generate')
+            log_writer(script_name = 'Incident-Data-Process', steps = '10-B', status = 'INFO', message = f'For File: "{Path(file_path).name}" Column Name Mapping Backend Process Response Generated.')
         incident_column_mapping_process_end_time = time.time()
     except Exception as error:
         log_writer(script_name = 'Incident-Data-Process', steps = '10-B', status = 'ERROR', message = str(error))
@@ -140,7 +140,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             # delete "file_path"
             file_path_object.unlink()
             log_writer(script_name = str(incident_column_process_backend_response['file_name']), steps = str(incident_column_process_backend_response['step']), status = 'ERROR', message = incident_column_process_backend_response['message'])
-            log_writer(script_name = 'Incident-Data-Process', steps = '10-D', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Deleted Because Column Mapping Not Complete')
+            log_writer(script_name = 'Incident-Data-Process', steps = '10-D', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Deleted Because Column Mapping Not Complete.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '10-D', status = 'ERROR', message=str(error))
 
@@ -166,11 +166,11 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         INCIDENT_DATA_COLUMN_PROCESS_COMPLETE_STATUS = False
                         database_connection.rollback()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '10-E', status = 'ERROR', message = f'Column Mapping Process Not Completed For File: "{Path(file_path).name}"')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '10-E', status = 'ERROR', message = f'Column Mapping Process Not Completed For File: "{Path(file_path).name}".')
                     else:
                         INCIDENT_DATA_COLUMN_PROCESS_COMPLETE_STATUS = True
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '10-E', status = 'SUCCESS', message = f'Column Mapping Process Completed For File: "{Path(file_path).name}" With Some Missing Column')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '10-E', status = 'SUCCESS', message = f'Column Mapping Process Completed For File: "{Path(file_path).name}" With Some Missing Column.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '10-E', status = 'ERROR', message = str(error))
 
@@ -196,11 +196,11 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         INCIDENT_DATA_COLUMN_PROCESS_COMPLETE_STATUS = False
                         database_connection.rollback()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '10-F', status = 'ERROR', message = f'Column Mapping Process Not Completed For File: "{Path(file_path).name}"')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '10-F', status = 'ERROR', message = f'Column Mapping Process Not Completed For File: "{Path(file_path).name}".')
                     else:
                         INCIDENT_DATA_COLUMN_PROCESS_COMPLETE_STATUS = True
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '10-F', status = 'SUCCESS', message = f'Column Mapping Process Completed For File: "{Path(file_path).name}" and all the required column(s) are present')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '10-F', status = 'SUCCESS', message = f'Column Mapping Process Completed For File: "{Path(file_path).name}" And All The Required Column(s) Are Present.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '10-F', status = 'ERROR', message = str(error))
     ####################################################
@@ -218,7 +218,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             incident_file_to_db_process_start_time = time.time()
             incident_data_file_to_db_backend_response = incident_file_to_db(file_unique_id = str(file_unique_id), file_path = str(incident_column_process_backend_response['file_path']))
             if (incident_data_file_to_db_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '11-B', status = 'INFO', message = f'For File: "{Path(file_path).name}" File To DB Backend Porcess Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '11-B', status = 'INFO', message = f'For File: "{Path(file_path).name}" File To DB Backend Process Response Generated.')
             incident_file_to_db_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '11-B', status = 'ERROR', message = str(error))
@@ -232,7 +232,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
                 # delete "file_path"
                 file_path_object.unlink()
                 log_writer(script_name = str(incident_data_file_to_db_backend_response['file_name']), steps = str(incident_data_file_to_db_backend_response['step']), status = 'ERROR', message = str(incident_data_file_to_db_backend_response['message']))
-                log_writer(script_name = 'Incident-Data-Process', steps = '11-C', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Deleted Because Data Process Not Complete')
+                log_writer(script_name = 'Incident-Data-Process', steps = '11-C', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Deleted Because Data Process Not Complete.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '11-C', status = 'ERROR', message = str(error))
 
@@ -257,11 +257,11 @@ def incident_data_process(file_unique_id: str, file_path: str):
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_FILE_TO_DB_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '11-D', status = 'ERROR', message = f'File To DB Process Not Completed For File: "{Path(file_path).name}"')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '11-D', status = 'ERROR', message = f'File To DB Process Not Completed For File: "{Path(file_path).name}".')
                         else:
                             INCIDENT_DATA_FILE_TO_DB_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '11-D', status = 'SUCCESS', message = f'File To DB Process Completed For File: "{Path(file_path).name}"')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '11-D', status = 'SUCCESS', message = f'File To DB Process Completed For File: "{Path(file_path).name}".')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '11-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -279,7 +279,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             incident_output_data_fill_process_start_time = time.time()
             incident_output_data_fill_backend_response = incident_output_data_fill()
             if (incident_output_data_fill_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'INFO', message = f'For Account Output Table Data Fill Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'INFO', message = f'For Account Output Table Data Fill Backend Process Response Generated.')
             incident_output_data_fill_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '12-B', status = 'ERROR', message = str(error))
@@ -312,11 +312,11 @@ def incident_data_process(file_unique_id: str, file_path: str):
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_OUTPUT_DATA_FILL_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = f'For Account Output Data Fill Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = f'For Account Output Data Fill Process Not Completed.')
                         else:
                             INCIDENT_DATA_OUTPUT_DATA_FILL_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account Output Data Fill Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'SUCCESS', message = f'For Account Output Data Fill Process Completed.')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '12-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -334,7 +334,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             data_normalization_process_start_time = time.time()
             normalized_data_backend_response = incident_normalized_data()
             if (normalized_data_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'INFO', message = f'For Account Data Normalization Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'INFO', message = f'For Account Data Normalization Backend Process Response Generated.')
             data_normalization_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '13-B', status = 'ERROR', message = str(error))
@@ -367,11 +367,11 @@ def incident_data_process(file_unique_id: str, file_path: str):
                         if ((insert_id_result is None) or (insert_id_result[0] is None)):
                             INCIDENT_DATA_DATA_NORMALIZED_PROCESS_COMPLETE_STATUS = False
                             database_connection.rollback()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = f'For Account Data Normalization Process Not Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = f'For Account Data Normalization Process Not Completed.')
                         else:
                             INCIDENT_DATA_DATA_NORMALIZED_PROCESS_COMPLETE_STATUS = True
                             database_connection.commit()
-                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account Data Normalization Process Completed')
+                            log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'SUCCESS', message = f'For Account Data Normalization Process Completed.')
             except Exception as error:
                 log_writer(script_name = 'Incident-Data-Process', steps = '13-D', status = 'ERROR', message = str(error))
     ######################################################
@@ -444,7 +444,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             keyword_analysis_process_start_time = time.time()
             keywords_analysis_backend_response = incident_keyword_analysis()
             if (keywords_analysis_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'INFO', message = f'For Account Keyword Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'INFO', message = f'For Account Keyword Analysis Backend Process Response Generated.')
             keyword_analysis_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '15-B', status = 'ERROR', message = str(error))
@@ -499,7 +499,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
             automation_mapping_process_start_time = time.time()
             automation_mapping_backend_response = incident_automation_mapping()
             if (automation_mapping_backend_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account Automation Mapping Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'INFO', message = f'For Account Automation Mapping Backend Process Response Generated.')
             automation_mapping_process_end_time = time.time()
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '16-B', status = 'ERROR', message = str(error))
@@ -553,7 +553,7 @@ def incident_data_process(file_unique_id: str, file_path: str):
         try:
             esoar_analysis_function_response = incident_esoar_process(file_unique_id = str(file_unique_id))
             if (esoar_analysis_function_response != None):
-                log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'INFO', message = f'For Account ESO Analysis Backend Process Response Generate')
+                log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'INFO', message = f'For Account ESO Analysis Backend Process Response Generated.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '17-B', status = 'ERROR', message = str(error))
 
@@ -587,9 +587,9 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     all_process_total_completion_seconds = database_cursor.fetchone()[0]
                     # check result
                     if ((all_process_total_completion_seconds is not None) and (int(all_process_total_completion_seconds) > 0)):
-                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'SUCCESS', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Fetched')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'SUCCESS', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Fetched.')
                     else:
-                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'ERROR', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Not Fetched')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'ERROR', message = f'For Account: "{file_unique_id}" All Process Completion Seconds Not Fetched.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '18-A', status = 'ERROR', message = str(error))
 
@@ -610,10 +610,10 @@ def incident_data_process(file_unique_id: str, file_path: str):
                     # check if data inserted or not
                     if ((insert_id_result is None) or (insert_id_result[0] is None)):
                         database_connection.rollback()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'ERROR', message = f'For Account Whole Analysis Complete')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'ERROR', message = f'For Account Whole Analysis Complete.')
                     else:
                         database_connection.commit()
-                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'SUCCESS', message = f'For Account Whole Analysis Not Completed')
+                        log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'SUCCESS', message = f'For Account Whole Analysis Not Completed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Data-Process', steps = '18-B', status = 'ERROR', message = str(error))
     #####################################################

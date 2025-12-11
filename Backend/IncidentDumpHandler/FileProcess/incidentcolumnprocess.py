@@ -32,7 +32,7 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
         file_process_folder_path = Path(incident_dump_handler_folder_path) / 'FileProcess'
         reference_folder_path = Path(file_process_folder_path) / 'ReferenceData'
         temp_files_dump_folder_path = Path(parent_folder_path) / 'TempFilesDump'
-        log_writer(script_name = 'Incident-Column-Process', steps = '4', status = 'SUCCESS', message = 'All Folders Are Defined')
+        log_writer(script_name = 'Incident-Column-Process', steps = '4', status = 'SUCCESS', message = 'All Folders Are Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '4', 'message' : str(error)}
@@ -41,10 +41,10 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
     try:
         file_path_object = Path(file_path)
         if file_path_object.exists() and file_path_object.is_file() and file_path_object.suffix.lower() == ".xlsx":
-            log_writer(script_name = 'Incident-Column-Process', steps = '5', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Acceptable With Allowed File Type')
+            log_writer(script_name = 'Incident-Column-Process', steps = '5', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Acceptable With Allowed File Type.')
         else:
-            log_writer(script_name = 'Incident-Column-Process', steps = '5', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" File Type Is Not Allowed List Which Are ".csv" Or ".xlsx"')
-            return {'status' : 'ERROR', 'message' : f'Submitted File Not A Acceptable Format Or Type Is Not Allowed List Which Is ".xlsx"', 'missing_columns' : missing_columns} #type: ignore
+            log_writer(script_name = 'Incident-Column-Process', steps = '5', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" File Type Is Not Allowed List Which Are ".csv" Or ".xlsx".')
+            return {'status' : 'ERROR', 'message' : f'Submitted File Not A Acceptable Format Or Type Is Not Allowed List Which Is ".xlsx".', 'missing_columns' : missing_columns} #type: ignore
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '5', 'message' : str(error)}
@@ -54,11 +54,11 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
         ticket_workbook = load_workbook(file_path)
         ticket_sheet_names = ticket_workbook.sheetnames
         if (int(len(ticket_sheet_names)) != 1):
-            log_writer(script_name = 'Incident-Column-Process', steps = '6', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Present Multiple Sheets')
-            return {'status' : 'ERROR', 'message' : f'Submitted File Present Multiple Sheets', 'missing_columns' : missing_columns} #type: ignore
+            log_writer(script_name = 'Incident-Column-Process', steps = '6', status = 'ERROR', message = f'Submitted File: "{file_path_object.name}" Present Multiple Sheets.')
+            return {'status' : 'ERROR', 'message' : f'Submitted File Present Multiple Sheets.', 'missing_columns' : missing_columns} #type: ignore
         else:
             sheet_name = ticket_sheet_names[0]
-            log_writer(script_name = 'Incident-Column-Process', steps = '6', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Present One Sheet Which Is: "{sheet_name}"')
+            log_writer(script_name = 'Incident-Column-Process', steps = '6', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Present One Sheet Which Is: "{sheet_name}".')
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '6', 'message' : str(error)}
@@ -67,7 +67,7 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
     try:
         ticket_dataframe = pandas.read_excel(file_path_object, sheet_name = sheet_name, engine = 'openpyxl', keep_default_na = False)
         ticket_dataframe['type'] = 'Incident'
-        log_writer(script_name = 'Incident-Column-Process', steps = '7', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Sheet: "{sheet_name}" Loaded Into Memory For Processing')
+        log_writer(script_name = 'Incident-Column-Process', steps = '7', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Sheet: "{sheet_name}" Loaded Into Memory For Processing.')
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '7', 'message' : str(error)}
@@ -108,13 +108,13 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
                 with allowed_list_file_path.open('r', encoding = 'utf-8') as list_file:
                     allowed_list = [line.strip() for line in list_file if line.strip()]
                     if (int(len(allowed_list)) > 0):
-                        log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'SUCCESS', message = f'Allowed List For "{required_column}" Present Inside "{required_column_allowed_list_file_name}" File')
+                        log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'SUCCESS', message = f'Allowed List For "{required_column}" Present Inside "{required_column_allowed_list_file_name}" File.')
                     else:
-                        log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'ERROR', message = f'Allowed List For "{required_column}" Not Present Inside "{required_column_allowed_list_file_name}" File')
-                        return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '9-A', 'message' : f'No Allowed List For "{required_column}" Not Present Inside "{required_column_allowed_list_file_name}" File'}
+                        log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'ERROR', message = f'Allowed List For "{required_column}" Not Present Inside "{required_column_allowed_list_file_name}" File.')
+                        return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '9-A', 'message' : f'No Allowed List For "{required_column}" Not Present Inside "{required_column_allowed_list_file_name}" File.'}
             else:
-                log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'ERROR', message = f'File: "{required_column_allowed_list_file_name}" Not Acceptable File')
-                return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '9-A', 'message' : f'File: "{required_column_allowed_list_file_name}" Not Acceptable File'}
+                log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'ERROR', message = f'File: "{required_column_allowed_list_file_name}" Not Acceptable File.')
+                return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '9-A', 'message' : f'File: "{required_column_allowed_list_file_name}" Not Acceptable File.'}
         except Exception as error:
             log_writer(script_name = 'Incident-Column-Process', steps = '9-A', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '9-A', 'message' : str(error)}
@@ -127,10 +127,10 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
                 if column_clean in allowed_list_clean:
                     column_present_status = True
                     ticket_dataframe.rename(columns = {column_name: required_column}, inplace = True)
-                    log_writer(script_name = 'Incident-Column-Process', steps = '9-B', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Column Name Changed To "{required_column}"')
+                    log_writer(script_name = 'Incident-Column-Process', steps = '9-B', status = 'SUCCESS', message = f'Submitted File: "{file_path_object.name}" Column Name Changed To "{required_column}".')
                     break
             if (not (column_present_status)):
-                log_writer(script_name = 'Incident-Column-Process', steps = '9-B', status = 'INFO', message = f'Submitted File: "{file_path_object.name}" Column Name "{required_column}" Not Found')
+                log_writer(script_name = 'Incident-Column-Process', steps = '9-B', status = 'INFO', message = f'Submitted File: "{file_path_object.name}" Column Name "{required_column}" Not Found.')
                 missing_columns.append(str(required_column).replace('_', ' ').title())
         except Exception as error:
             log_writer(script_name = 'Incident-Column-Process', steps = '9-B', status = 'ERROR', message = str(error))
@@ -146,7 +146,7 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
         ticket_dataframe = ticket_dataframe.apply(lambda col: col.map(lambda x: (pandas.NA if isinstance(x, str) and x.strip() == '' else (x.strip() if isinstance(x, str) else x))))
         ticket_dataframe = ticket_dataframe.fillna('N/A')
         ticket_dataframe = ticket_dataframe[required_output_column]
-        log_writer(script_name = 'Incident-Column-Process', steps = '10', status = 'SUCCESS', message = f'Filter Output File With Required Column; Others Column Drop From The File: "{file_path_object.name}"')
+        log_writer(script_name = 'Incident-Column-Process', steps = '10', status = 'SUCCESS', message = f'Filter Output File With Required Column; Others Column Drop From The File: "{file_path_object.name}".')
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '10', 'message' : str(error)}
@@ -157,7 +157,7 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
         with pandas.ExcelWriter(modified_output_file_path, mode = 'w', engine = 'openpyxl') as excel_file_writer:
             ticket_dataframe.to_excel(excel_file_writer, sheet_name = 'raw_data', index = False)
         if ((modified_output_file_path.exists()) and (modified_output_file_path.is_file())):
-            log_writer(script_name = 'Incident-Column-Process', steps = '11', status = 'SUCCESS', message = f'New File: "{modified_output_file_path.name}" Saved With Updated Column Name')
+            log_writer(script_name = 'Incident-Column-Process', steps = '11', status = 'SUCCESS', message = f'New File: "{modified_output_file_path.name}" Saved With Updated Column Name.')
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '11', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '11', 'message' : str(error)}
@@ -165,9 +165,9 @@ def incident_column_process(file_path: str) -> dict[str, str]: #type: ignore
     # define return statement:S12
     try:
         if (int(len(missing_columns)) > 0):
-            return {'status' : 'INFO', 'message' : 'Required Column Not Present Inside Ticket Dump File', 'missing_columns' : missing_columns, 'file_path' : modified_output_file_path} #type: ignore
+            return {'status' : 'INFO', 'message' : 'Required Column Not Present Inside Ticket Dump File.', 'missing_columns' : missing_columns, 'file_path' : modified_output_file_path} #type: ignore
         else:
-            return {'status' : 'SUCCESS', 'message' : 'Column Process Completed', 'missing_columns' : 'N/A', 'file_path' : modified_output_file_path} #type: ignore
+            return {'status' : 'SUCCESS', 'message' : 'Column Process Completed.', 'missing_columns' : 'N/A', 'file_path' : modified_output_file_path} #type: ignore
     except Exception as error:
         log_writer(script_name = 'Incident-Column-Process', steps = '12', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Column-Process', 'step' : '12', 'message' : str(error)}

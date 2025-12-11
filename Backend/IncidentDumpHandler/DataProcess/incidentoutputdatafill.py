@@ -26,7 +26,7 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
     try:
         parent_folder_path = Path.cwd()
         env_file_path = Path(parent_folder_path) / '.env'
-        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '4', 'message' : str(error)}
@@ -34,10 +34,10 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Output-Data-Fill', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Output-Data-Fill', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Output-Data-Fill', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Output-Data-Fill', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '5', 'message' : str(error)}
@@ -45,7 +45,7 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '6', 'message' : str(error)}
@@ -59,7 +59,7 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '7', 'message' : str(error)}
@@ -76,10 +76,10 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '8', 'message' : str(error)}
@@ -96,10 +96,10 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Output-Data-Fill', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '9', 'message' : str(error)}
@@ -127,9 +127,9 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) > 0):
-                        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '10', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Fetched For Output Table Fill Process')
+                        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '10', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Fetched For Output Table Fill Process.')
                     else:
-                        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '10', status = 'INFO', message = f'No New Rows Present For Output Table Fill Process')
+                        log_writer(script_name = 'Incident-Output-Data-Fill', steps = '10', status = 'INFO', message = f'No New Rows Present For Output Table Fill Process.')
                         break
         except Exception as error:
             log_writer(script_name = 'Incident-Output-Data-Fill', steps = '10', status = 'ERROR', message = str(error))
@@ -171,7 +171,7 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '12', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '12', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Output-Data-Fill', steps = '12', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '12', 'message' : str(error)}
@@ -188,11 +188,11 @@ def incident_output_data_fill() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '13', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Updated "row_status" To "2" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '13', status = 'SUCCESS', message = f'Total {int(len(processed_data_insert_rows))}-Rows Updated "row_status" To "2" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Output-Data-Fill', steps = '13', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '13', 'message' : str(error)}
 
     # sending return message to main script:S14
-    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '14', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Output Data Filled And Updated Into "input_incident_data" Table')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '14', 'message' : f'Total {total_count}-Rows Of Output Data Filled And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Output-Data-Fill', steps = '14', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Output Data Filled And Updated Into "input_incident_data" Table.')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Output-Data-Fill', 'step' : '14', 'message' : f'Total {total_count}-Rows Of Output Data Filled And Updated Into "input_incident_data" Table.'}

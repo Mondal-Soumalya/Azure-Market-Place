@@ -35,7 +35,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
         auto_resolved_keywords_file_path = Path(reference_data_folder_path) / 'AutoResolvedKeywords.txt'
         autoheal_assigned_to_keywords_file_path = Path(reference_data_folder_path) / 'AutoHealAssignedToKeywords.txt'
         autoheal_description_keywords_file_path = Path(reference_data_folder_path) / 'AutoHealDescriptionKeyword.txt'
-        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '4', 'message' : str(error)}
@@ -43,10 +43,10 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '5', 'message' : str(error)}
@@ -54,7 +54,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '6', 'message' : str(error)}
@@ -68,7 +68,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '7', 'message' : str(error)}
@@ -85,10 +85,10 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '8', 'message' : str(error)}
@@ -105,10 +105,10 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '9', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '9', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '9', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '9', 'message' : str(error)}
@@ -118,11 +118,11 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
         if ((auto_resolved_keywords_file_path.exists()) and (auto_resolved_keywords_file_path.is_file()) and (auto_resolved_keywords_file_path.suffix.lower() == '.txt')):
             with open(auto_resolved_keywords_file_path, 'r', encoding = 'utf-8') as blank_ci_keywords_file:
                 auto_resolved_keywords = [line.strip().lower() for line in blank_ci_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'SUCCESS', message = '"AutoResolvedKeywords.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'SUCCESS', message = '"AutoResolvedKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
             auto_resolved_keywords = ['splunk']
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'ERROR', message = '"AutoResolvedKeywords.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '10', 'message' : '"AutoResolvedKeywords.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'ERROR', message = '"AutoResolvedKeywords.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '10', 'message' : '"AutoResolvedKeywords.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '10', 'message' : str(error)}
@@ -132,11 +132,11 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
         if ((autoheal_assigned_to_keywords_file_path.exists()) and (autoheal_assigned_to_keywords_file_path.is_file()) and (autoheal_assigned_to_keywords_file_path.suffix.lower() == '.txt')):
             with open(autoheal_assigned_to_keywords_file_path, 'r', encoding = 'utf-8') as blank_ci_keywords_file:
                 autoheal_assigned_to_keywords = [line.strip().lower() for line in blank_ci_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '11', status = 'SUCCESS', message = '"AutoHealAssignedToKeywords.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '11', status = 'SUCCESS', message = '"AutoHealAssignedToKeywords.txt" File Is Present And Content Loaded Into Script.')
         else:
             autoheal_assigned_to_keywords = ['rbaautoheal']
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '11', status = 'ERROR', message = '"AutoHealAssignedToKeywords.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '11', 'message' : '"AutoHealAssignedToKeywords.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '11', status = 'ERROR', message = '"AutoHealAssignedToKeywords.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '11', 'message' : '"AutoHealAssignedToKeywords.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '11', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '11', 'message' : str(error)}
@@ -146,11 +146,11 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
         if ((autoheal_description_keywords_file_path.exists()) and (autoheal_description_keywords_file_path.is_file()) and (autoheal_description_keywords_file_path.suffix.lower() == '.txt')):
             with open(autoheal_description_keywords_file_path, 'r', encoding = 'utf-8') as blank_ci_keywords_file:
                 autoheal_description_keywords = [line.strip().lower() for line in blank_ci_keywords_file if line.strip()]
-                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '12', status = 'SUCCESS', message = '"AutoHealDescriptionKeyword.txt" File Is Present And Content Loaded Into Script')
+                log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '12', status = 'SUCCESS', message = '"AutoHealDescriptionKeyword.txt" File Is Present And Content Loaded Into Script.')
         else:
             autoheal_description_keywords = ['AHDFC', 'AHDF', 'AHDFOM', 'AHDFSNF', 'AHDFSNFWFHNC', 'AHDP', 'AHDRCF', 'AHDRFCNO', 'AHDRFNO', 'AHDRNO', 'AHDSD', 'AHP', 'AHDSR', 'AHDSDWFHNC', 'ARIP', 'AHLE']
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '12', status = 'ERROR', message = '"AutoHealDescriptionKeyword.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '12', 'message' : '"AutoHealDescriptionKeyword.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '12', status = 'ERROR', message = '"AutoHealDescriptionKeyword.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '12', 'message' : '"AutoHealDescriptionKeyword.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '12', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '12', 'message' : str(error)}
@@ -255,7 +255,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Assignment Group Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Assignment Group Category Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '15', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '15', 'message' : str(error)}
@@ -284,7 +284,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Resolved Type Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Resolved Type Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '16', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '16', 'message' : str(error)}
@@ -322,7 +322,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Autoheal Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Autoheal Category Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '17', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '17', 'message' : str(error)}
@@ -377,7 +377,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data ESO-Analysis Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data ESO-Analysis Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '18', 'message' : str(error)}
@@ -420,7 +420,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
 
                 # replace modified row
                 to_be_processed_data[i] = tuple(row_list)
-            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed')
+            log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Of Data Final Category Processed.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '19', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '19', 'message' : str(error)}
@@ -469,7 +469,7 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '21', 'message' : str(error)}
@@ -486,10 +486,10 @@ def incident_final_category_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_row)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {int(len(to_be_processed_data))}-Rows Updated "row_status" To "11" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Final-Category-Analysis', steps = '22', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '22', 'message' : str(error)}
 
     # sending return message to main script:S23
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '23', 'message' : f'Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table'}
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Final-Category-Analysis', 'step' : '23', 'message' : f'Total {total_count}-Rows Of Data Final Category Analysis Completed And Updated Into "input_incident_data" Table.'}

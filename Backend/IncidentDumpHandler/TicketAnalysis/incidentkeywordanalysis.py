@@ -43,7 +43,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
         reference_data_folder_path = Path(ticket_analysis_folder_path) / 'ReferenceData'
         incident_keyword_analysis_system_prompt_file_path = Path(reference_data_folder_path) / 'IncidentKeywordAnalysisSystemPrompt.txt'
         incident_keyword_mapping_json_file_path = Path(reference_data_folder_path) / 'IncidentKeywordMapping.json'
-        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined')
+        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '4', status = 'SUCCESS', message = 'All Folder And File Path Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '4', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '4', 'message' : str(error)}
@@ -51,10 +51,10 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S5
     try:
         if ((env_file_path.exists()) and (env_file_path.is_file())):
-            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present')
+            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '5', status = 'SUCCESS', message = '".env" File Is Present.')
         else:
-            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '5', 'message' : '".env" File Not Present'}
+            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '5', status = 'ERROR', message = '".env" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '5', 'message' : '".env" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '5', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '5', 'message' : str(error)}
@@ -62,7 +62,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
     # load ".env" file into script:S6
     try:
         environment_values = dotenv_values(env_file_path)
-        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script')
+        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '6', status = 'SUCCESS', message = '".env" File Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '6', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '6', 'message' : str(error)}
@@ -76,7 +76,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
             "host" : str(environment_values.get('DATABASE_HOST')),
             "port" : str(environment_values.get('DATABASE_PORT'))
         }
-        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined')
+        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '7', status = 'SUCCESS', message = 'Database Connection Parameter Defined.')
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '7', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '7', 'message' : str(error)}
@@ -93,10 +93,10 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(input_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '8', status = 'SUCCESS', message = '"input_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '8', status = 'ERROR', message = '"input_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '8', 'message' : '"input_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '8', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '8', 'message' : str(error)}
@@ -113,10 +113,10 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(token_count_details_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '9', status = 'SUCCESS', message = '"token_count_details" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '9', status = 'SUCCESS', message = '"token_count_details" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '9', status = 'ERROR', message = '"token_count_details" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '9', 'message' : '"token_count_details" Table Not Present'}
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '9', status = 'ERROR', message = '"token_count_details" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '9', 'message' : '"token_count_details" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '9', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '9', 'message' : str(error)}
@@ -133,10 +133,10 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(processed_incident_data_table_present_check_sql)
                 if (database_cursor.fetchone()[0]):
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '10', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '10', status = 'SUCCESS', message = '"processed_incident_data" Table Present Inside Database.')
                 else:
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '10', status = 'ERROR', message = '"processed_incident_data" Table Not Present')
-                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '10', 'message' : '"processed_incident_data" Table Not Present'}
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '10', status = 'ERROR', message = '"processed_incident_data" Table Not Present.')
+                    return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '10', 'message' : '"processed_incident_data" Table Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '10', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '10', 'message' : str(error)}
@@ -147,7 +147,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
         api_deployment_name = str(environment_values.get('OPENAI_DEPLOYMENT_NAME'))
         api_version = str(environment_values.get('OPENAI_API_VERSION'))
         api_key = str(environment_values.get('OPENAI_API_KEY'))
-        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '11', status = 'SUCCESS', message = 'Azure OpenAI Configured With "gpt-4o" Tokenizer')
+        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '11', status = 'SUCCESS', message = 'Azure OpenAI Configured With "gpt-4o" Tokenizer.')
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '11', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '11', 'message' : str(error)}
@@ -159,8 +159,8 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                 incident_keyword_analysis_system_prompt = system_prompt_file.read()
                 log_writer(script_name = 'Incident-Keyword-Analysis', steps = '12', status = 'SUCCESS', message = 'System Prompt Loaded Into Script')
         else:
-            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '12', status = 'ERROR', message = '"IncidentKeywordAnalysisSystemPrompt.txt" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '12', 'message' : '"IncidentKeywordAnalysisSystemPrompt.txt" File Not Present'}
+            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '12', status = 'ERROR', message = '"IncidentKeywordAnalysisSystemPrompt.txt" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '12', 'message' : '"IncidentKeywordAnalysisSystemPrompt.txt" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '12', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '12', 'message' : str(error)}
@@ -172,8 +172,8 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                 incident_keyword_alias_map = json.load(keyword_mapping_file)
                 log_writer(script_name = 'Incident-Keyword-Analysis', steps = '13', status = 'SUCCESS', message = 'Keyword Alias Mapping Loaded Into Script')
         else:
-            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '13', status = 'ERROR', message = '"IncidentKeywordMapping.json" File Not Present')
-            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '13', 'message' : '"IncidentKeywordMapping.json" File Not Present'}
+            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '13', status = 'ERROR', message = '"IncidentKeywordMapping.json" File Not Present.')
+            return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '13', 'message' : '"IncidentKeywordMapping.json" File Not Present.'}
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '13', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '13', 'message' : str(error)}
@@ -183,7 +183,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
         nltk.data.path.append(nltk_model_folder_path)
         stop_words = set(stopwords.words('english'))
         lemmatizer = WordNetLemmatizer()
-        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '14', status = 'SUCCESS', message = 'NLTK Lemmatizer And Stop Words Model Loaded Into Script')
+        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '14', status = 'SUCCESS', message = 'NLTK Lemmatizer And Stop Words Model Loaded Into Script.')
     except Exception as error:
         log_writer(script_name = 'Incident-Keyword-Analysis', steps = '14', status = 'ERROR', message = str(error))
         return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '14', 'message' : str(error)}
@@ -344,20 +344,20 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                     to_be_processed_data = database_cursor.fetchall()
                     # check if new data present inside table
                     if (int(len(to_be_processed_data)) == 0):
-                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'No New Rows Present For Keyword Analysis')
+                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'No New Rows Present For Keyword Analysis.')
                         break
                     # check if batch is same as previous
                     current_batch_ids = {(row[0],) for row in to_be_processed_data}
                     if (current_batch_ids == previous_batch_ids):
                         same_batch_counter += 1
-                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'Same Batch Fetched {same_batch_counter} Times For Keyword Analysis')
+                        log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'Same Batch Fetched {same_batch_counter} Times For Keyword Analysis.')
                         if (int(same_batch_counter) >= int(same_batch_retry_count_limiter)):
-                            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'Same Batch Reached {same_batch_retry_count_limiter} Times For Keyword Analysis, Breaking Loop')
+                            log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'INFO', message = f'Same Batch Reached {same_batch_retry_count_limiter} Times For Keyword Analysis, Breaking Loop.')
                             break
                     else:
                         same_batch_counter = 0
                         previous_batch_ids = current_batch_ids
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Fetched For Keyword Analysis Process')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Fetched For Keyword Analysis Process.')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '18', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '18', 'message' : str(error)}
@@ -414,7 +414,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, data_upsert_sql_for_processed_incident_data_table, processed_data_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "processed_incident_data" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "processed_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '21', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '21', 'message' : str(error)}
@@ -440,7 +440,7 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, token_upsert_sql, token_details_insert_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "token_count_details" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Upserted Into "token_count_details" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '22', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '22', 'message' : str(error)}
@@ -457,11 +457,11 @@ def incident_keyword_analysis() -> dict[str, str]: #type: ignore
                 with database_connection.cursor() as database_cursor:
                     execute_values(database_cursor, update_row_status_sql_for_input_incident_data_table, input_data_update_rows)
                     database_connection.commit()
-                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Updated "row_status" To "5" Inside "input_incident_data" Table')
+                    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'SUCCESS', message = f'Total {len(to_be_processed_data)}-Rows Updated "row_status" To "5" Inside "input_incident_data" Table.')
         except Exception as error:
             log_writer(script_name = 'Incident-Keyword-Analysis', steps = '23', status = 'ERROR', message = str(error))
             return {'status' : 'ERROR', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '23', 'message' : str(error)}
 
     # sending return message to main script:S24
-    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table')
-    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '24', 'message' : f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table'}
+    log_writer(script_name = 'Incident-Keyword-Analysis', steps = '24', status = 'SUCCESS', message = f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table.')
+    return {'status' : 'SUCCESS', 'file_name' : 'Incident-Keyword-Analysis', 'step' : '24', 'message' : f'Total {total_count}-Rows Of Data Keyword Analysis Completed And Updated Into "input_incident_data" Table.'}

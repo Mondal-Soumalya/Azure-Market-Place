@@ -30,7 +30,7 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     # check if ".env" file is present:S4
     try:
         if (not ((env_file_path.exists()) and (env_file_path.is_file()))):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '4', 'message' : '".env" File Not Present'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '4', 'message' : '".env" File Not Present.'}
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '4', 'message' : str(error)}
 
@@ -46,11 +46,11 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         # checking "database_table_create" files
         for file_name in database_table_create_scripts_files:
             if not (Path(database_table_create_folder_path) / file_name).exists():
-                return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : f'File Not Found: {file_name}'}
+                return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : f'File Not Found: {file_name}.'}
         # checking "database_data_entry" files
         for file_name in database_data_entry_files:
             if not (Path(database_data_entry_folder_path) / file_name).exists():
-                return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : f'File Not Found: {file_name}'}
+                return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : f'File Not Found: {file_name}.'}
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '6', 'message' : str(error)}
 
@@ -81,10 +81,10 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         database_cursor = database_connection.cursor()
         try:
             database_cursor.execute(create_user_sql, (db_password,))
-            print(f'SUCCESS - "{db_user}" User Created Successfully')
+            print(f'SUCCESS - "{db_user}" User Created Successfully.')
         except psycopg2.Error as pg_error:
             if 'already exists' in str(pg_error):
-                print(f'INFO - "{db_user}" User Already Present')
+                print(f'INFO - "{db_user}" User Already Present.')
             else:
                 raise pg_error
     except Exception as error:
@@ -105,12 +105,12 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         database_cursor = database_connection.cursor()
         database_cursor.execute(database_existence_check_sql, (db_name,))
         if (database_cursor.fetchone()[0]):
-            print(f'INFO - "{db_name}" Database Already Present')
+            print(f'INFO - "{db_name}" Database Already Present.')
         else:
             # create "database" if not present
             create_database_sql = sql.SQL("CREATE DATABASE {} OWNER {}").format(sql.Identifier(db_name), sql.Identifier(db_user))
             database_cursor.execute(create_database_sql)
-            print(f'SUCCESS - "{db_name}" Database Created Successfully')
+            print(f'SUCCESS - "{db_name}" Database Created Successfully.')
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '9', 'message' : str(error)}
     finally:
@@ -128,17 +128,17 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         application_log_table_create_backend_response = application_log_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (application_log_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '10-B', 'message' : '"application_log_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '10-B', 'message' : '"application_log_table_create" Function Not Executed Properly.'}
         elif (str(application_log_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(application_log_table_create_backend_response['file_name']), 'step' : str(application_log_table_create_backend_response['step']), 'message' : str(application_log_table_create_backend_response['message'])}
         elif (str(application_log_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(application_log_table_create_backend_response['message'])}")
+            print(f"INFO - {str(application_log_table_create_backend_response['message'])}.")
         elif (str(application_log_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(application_log_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(application_log_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '10-B', 'message' : str(error)}
 
-    # creating "bot_catalouge_details" table:S11
+    # creating "bot_catalogue_details" table:S11
     # importing "bot_catalogue_details_table_create" function:S11-A
     try:
         from DatabaseHandler.DatabaseTableCreate.botcataloguedetailstablecreate import bot_catalogue_details_table_create
@@ -149,13 +149,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         bot_catalogue_details_table_create_backend_response = bot_catalogue_details_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (bot_catalogue_details_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '11-B', 'message' : '"bot_catalogue_details_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '11-B', 'message' : '"bot_catalogue_details_table_create" Function Not Executed Properly.'}
         elif (str(bot_catalogue_details_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(bot_catalogue_details_table_create_backend_response['file_name']), 'step' : str(bot_catalogue_details_table_create_backend_response['step']), 'message' : str(bot_catalogue_details_table_create_backend_response['message'])}
         elif (str(bot_catalogue_details_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(bot_catalogue_details_table_create_backend_response['message'])}")
+            print(f"INFO - {str(bot_catalogue_details_table_create_backend_response['message'])}.")
         elif (str(bot_catalogue_details_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(bot_catalogue_details_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(bot_catalogue_details_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '11-B', 'message' : str(error)}
 
@@ -170,13 +170,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         submitted_file_details_table_create_backend_response = submitted_file_details_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (submitted_file_details_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '12-B', 'message' : '"submitted_file_details_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '12-B', 'message' : '"submitted_file_details_table_create" Function Not Executed Properly.'}
         elif (str(submitted_file_details_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(submitted_file_details_table_create_backend_response['file_name']), 'step' : str(submitted_file_details_table_create_backend_response['step']), 'message' : str(submitted_file_details_table_create_backend_response['message'])}
         elif (str(submitted_file_details_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(submitted_file_details_table_create_backend_response['message'])}")
+            print(f"INFO - {str(submitted_file_details_table_create_backend_response['message'])}.")
         elif (str(submitted_file_details_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(submitted_file_details_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(submitted_file_details_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '12-B', 'message' : str(error)}
 
@@ -191,13 +191,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         file_process_status_table_create_backend_response = file_process_status_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (file_process_status_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '13-B', 'message' : '"file_process_status_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '13-B', 'message' : '"file_process_status_table_create" Function Not Executed Properly.'}
         elif (str(file_process_status_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(file_process_status_table_create_backend_response['file_name']), 'step' : str(file_process_status_table_create_backend_response['step']), 'message' : str(file_process_status_table_create_backend_response['message'])}
         elif (str(file_process_status_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(file_process_status_table_create_backend_response['message'])}")
+            print(f"INFO - {str(file_process_status_table_create_backend_response['message'])}.")
         elif (str(file_process_status_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(file_process_status_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(file_process_status_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '13-B', 'message' : str(error)}
 
@@ -212,13 +212,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         skip_row_details_table_create_backend_response = skip_row_details_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (skip_row_details_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '14-B', 'message' : '"skip_row_details_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '14-B', 'message' : '"skip_row_details_table_create" Function Not Executed Properly.'}
         elif (str(skip_row_details_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(skip_row_details_table_create_backend_response['file_name']), 'step' : str(skip_row_details_table_create_backend_response['step']), 'message' : str(skip_row_details_table_create_backend_response['message'])}
         elif (str(skip_row_details_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(skip_row_details_table_create_backend_response['message'])}")
+            print(f"INFO - {str(skip_row_details_table_create_backend_response['message'])}.")
         elif (str(skip_row_details_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(skip_row_details_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(skip_row_details_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '14-B', 'message' : str(error)}
 
@@ -233,13 +233,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         input_incident_data_table_create_backend_response = input_incident_data_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (input_incident_data_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '15-B', 'message' : '"input_incident_data_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '15-B', 'message' : '"input_incident_data_table_create" Function Not Executed Properly.'}
         elif (str(input_incident_data_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(input_incident_data_table_create_backend_response['file_name']), 'step' : str(input_incident_data_table_create_backend_response['step']), 'message' : str(input_incident_data_table_create_backend_response['message'])}
         elif (str(input_incident_data_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(input_incident_data_table_create_backend_response['message'])}")
+            print(f"INFO - {str(input_incident_data_table_create_backend_response['message'])}.")
         elif (str(input_incident_data_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(input_incident_data_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(input_incident_data_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '15-B', 'message' : str(error)}
 
@@ -254,13 +254,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         processed_incident_data_table_create_backend_response = processed_incident_data_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (processed_incident_data_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '16-B', 'message' : '"processed_incident_data_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '16-B', 'message' : '"processed_incident_data_table_create" Function Not Executed Properly.'}
         elif (str(processed_incident_data_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(processed_incident_data_table_create_backend_response['file_name']), 'step' : str(processed_incident_data_table_create_backend_response['step']), 'message' : str(processed_incident_data_table_create_backend_response['message'])}
         elif (str(processed_incident_data_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(processed_incident_data_table_create_backend_response['message'])}")
+            print(f"INFO - {str(processed_incident_data_table_create_backend_response['message'])}.")
         elif (str(processed_incident_data_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(processed_incident_data_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(processed_incident_data_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '16-B', 'message' : str(error)}
 
@@ -275,13 +275,13 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         token_count_details_table_create_backend_response = token_count_details_table_create(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port))
         if (token_count_details_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '17-B', 'message' : '"token_count_details_table_create" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '17-B', 'message' : '"token_count_details_table_create" Function Not Executed Properly.'}
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(token_count_details_table_create_backend_response['file_name']), 'step' : str(token_count_details_table_create_backend_response['step']), 'message' : str(token_count_details_table_create_backend_response['message'])}
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(token_count_details_table_create_backend_response['message'])}")
+            print(f"INFO - {str(token_count_details_table_create_backend_response['message'])}.")
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(token_count_details_table_create_backend_response['message'])}")
+            print(f"SUCCESS - {str(token_count_details_table_create_backend_response['message'])}.")
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '17-B', 'message' : str(error)}
 
@@ -296,14 +296,14 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     try:
         token_count_details_table_create_backend_response = bot_catalogue_details_data_entry(db_name = str(db_name), db_user = str(db_user), db_password = str(db_password), db_host = str(db_host), db_port = str(db_port), excel_file_path = str(bot_catalogue_data_excel_file_path))
         if (token_count_details_table_create_backend_response == None):
-            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : '"bot_catalogue_details_data_entry" Function Not Executed Properly'}
+            return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : '"bot_catalogue_details_data_entry" Function Not Executed Properly.'}
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'error'):
             return {'status' : 'ERROR', 'file_name' : str(token_count_details_table_create_backend_response['file_name']), 'step' : str(token_count_details_table_create_backend_response['step']), 'message' : str(token_count_details_table_create_backend_response['message'])}
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'info'):
-            print(f"INFO - {str(token_count_details_table_create_backend_response['message'])}")
-            return {'status' : 'SUCCESS', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : 'All The Initial Setup Completed For PRiSM-Analytics Application'}
+            print(f"INFO - {str(token_count_details_table_create_backend_response['message'])}.")
+            return {'status' : 'SUCCESS', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : 'All The Initial Setup Completed For PRiSM-Analytics Application.'}
         elif (str(token_count_details_table_create_backend_response['status']).lower() == 'success'):
-            print(f"SUCCESS - {str(token_count_details_table_create_backend_response['message'])}")
-            return {'status' : 'SUCCESS', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : 'All The Initial Setup Completed For PRiSM-Analytics Application'}
+            print(f"SUCCESS - {str(token_count_details_table_create_backend_response['message'])}.")
+            return {'status' : 'SUCCESS', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : 'All The Initial Setup Completed For PRiSM-Analytics Application.'}
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '18-B', 'message' : str(error)}

@@ -32,7 +32,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.execute(table_check_sql)
                 if (not (database_cursor.fetchone()[0])):
-                    return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '3', 'message': '"bot_catalogue_details" Table Not Present'}
+                    return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '3', 'message': '"bot_catalogue_details" Table Not Present.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '3', 'message': str(error)}
 
@@ -66,7 +66,7 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     try:
         excel_path = Path(str(excel_file_path).strip().strip('"'))
         if (not (excel_path.exists() and excel_path.is_file() and excel_path.suffix.lower() == '.xlsx')):
-            return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '5', 'message': 'Invalid Excel File Path'}
+            return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '5', 'message': 'Invalid Excel File Path.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '5', 'message': str(error)}
 
@@ -119,6 +119,6 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
             with database_connection.cursor() as database_cursor:
                 database_cursor.executemany(bot_catalogue_details_upsert_sql, insertion_rows)
                 database_connection.commit()
-        return {'status': 'SUCCESS', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '8', 'message': 'BoT Catalogue Data Inserted Successfully'}
+        return {'status': 'SUCCESS', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '8', 'message': 'BoT Catalogue Data Inserted Successfully.'}
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '8', 'message': str(error)}
