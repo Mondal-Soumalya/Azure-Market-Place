@@ -137,62 +137,6 @@ def incidentanalysis():
         except Exception as error:
             log_writer(script_name = 'App', steps = '10-D', status = 'ERROR', message = str(error))
 
-# define "servicedeskanalysis" route:S11
-@app.route('/servicedeskanalysis', methods=['GET', 'POST']) #type: ignore
-def servicedeskanalysis():
-    # if request method is "POST"
-    if (request.method == 'POST'):
-        # importing "service_desk_ticket_file_handler" function to process incident file:S19-A
-        try:
-            from Backend.ServiceDeskDumpHandler.servicedeskfilehandler import service_desk_ticket_file_handler
-        except Exception as error:
-            log_writer(script_name = 'App', steps = '11-A', status = 'ERROR', message = str(error))
-            return jsonify({'error': 'An error occurred while processing the form'}), 500
-
-        # fetching details from frontend:S11-B
-        try:
-            # get the account id
-            service_desk_analysis_account_id = request.form.get('account_name')
-            # get the user unique id
-            user_unique_id = session['user_unique_id']
-            # get ticket dump file
-            service_desk_ticket_file = request.files.get('service_desk_dump_file')
-        except Exception as error:
-            log_writer(script_name = 'App', steps = '11-B', status = 'ERROR', message = str(error))
-            return jsonify({'error': 'An error occurred while processing the form'}), 500
-
-        # calling "service_desk_ticket_file_handler" function to process file:S11-C
-        if ((service_desk_ticket_file) and (str(service_desk_analysis_account_id) != '')):
-            try:
-                # pass the file to "service_desk_ticket_file_handler" function
-                service_desk_analysis_backend_process = service_desk_ticket_file_handler(user_email = str(session['user_email_id']), user_unique_id = str(user_unique_id), account_unique_id = str(service_desk_analysis_account_id), file = service_desk_ticket_file)
-                # check response
-                if (str(service_desk_analysis_backend_process['status']).lower() == 'success'):
-                    log_writer(script_name = 'App', steps = '11-C', status = 'SUCCESS', message = str(service_desk_analysis_backend_process['message']))
-                    return jsonify({'message': service_desk_analysis_backend_process['message']}), 200
-                if (str(service_desk_analysis_backend_process['status']).lower() == 'info'):
-                    log_writer(script_name = service_desk_analysis_backend_process['file_name'], steps = service_desk_analysis_backend_process['step'], status = 'INFO', message = str(service_desk_analysis_backend_process['message']))
-                    return jsonify({'message': service_desk_analysis_backend_process['message']}), 500
-                if (str(service_desk_analysis_backend_process['status']).lower() == 'error'):
-                    log_writer(script_name = service_desk_analysis_backend_process['file_name'], steps = service_desk_analysis_backend_process['step'], status = 'ERROR', message = str(service_desk_analysis_backend_process['message']))
-                    return jsonify({'message': service_desk_analysis_backend_process['message']}), 500
-            except Exception as error:
-                log_writer(script_name = 'App', steps = '11-C', status = 'ERROR', message = str(error))
-                return jsonify({'error': 'An Error Occurred While Processing The Form'}), 500
-        else:
-            # Return error response if no file is uploaded
-            log_writer(script_name = 'App', steps = '11-C', status = 'ERROR', message = 'No File Uploaded')
-            return jsonify({'error': 'No File Uploaded'}), 400
-
-    # if it is a "GET" request
-    if (request.method == 'GET'):
-        # re-directing "/servicedeskanalysis" page with all account data:S11-D
-        try:
-            log_writer(script_name = 'App', steps = '11-D', status = 'SUCCESS', message = '"/servicedeskanalysis" Page Routed Successfully')
-            return render_template('servicedeskanalysis.html')
-        except Exception as error:
-            log_writer(script_name = 'App', steps = '11-D', status = 'ERROR', message = str(error))
-
 # define main function
 if __name__ == '__main__':
     # calling flask application
