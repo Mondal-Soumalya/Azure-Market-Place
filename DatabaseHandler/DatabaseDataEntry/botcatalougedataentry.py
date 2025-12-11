@@ -11,11 +11,11 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
     # define database parameters:S2
     try:
         database_connection_parameter = {
-            "dbname": str(db_name),
-            "user": str(db_user),
-            "password": str(db_password),
-            "host": str(db_host),
-            "port": str(db_port)
+            'dbname': str(db_name),
+            'user': str(db_user),
+            'password': str(db_password),
+            'host': str(db_host),
+            'port': str(db_port)
         }
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '2', 'message': str(error)}
@@ -96,19 +96,19 @@ def bot_catalogue_details_data_entry(db_name: str, db_user: str, db_password: st
         # loop through all the values
         for row in filtered_df.values:
             insertion_rows.append((
-                clean_cell(row[0]),  # bot_source
-                clean_cell(row[1]),  # bot_id
-                clean_cell(row[2]),  # functionality
-                clean_cell(row[3]),  # short_solution_description
-                clean_cell(row[4]),  # tower
-                clean_cell(row[5]),  # technology
-                clean_cell(row[6]),  # primary_developed_language
-                clean_cell(row[7]),  # secondary_developed_language
-                clean_cell(row[8]),  # operational_response
-                clean_cell(row[9]),  # developed_platform
+                clean_cell(row[0]), # bot_source
+                clean_cell(row[1]), # bot_id
+                clean_cell(row[2]), # functionality
+                clean_cell(row[3]), # short_solution_description
+                clean_cell(row[4]), # tower
+                clean_cell(row[5]), # technology
+                clean_cell(row[6]), # primary_developed_language
+                clean_cell(row[7]), # secondary_developed_language
+                clean_cell(row[8]), # operational_response
+                clean_cell(row[9]), # developed_platform
                 clean_cell(row[10]), # demand_category
                 clean_cell(row[11]), # type_of_automation
-                clean_cell(row[12])  # solution_description
+                clean_cell(row[12]) # solution_description
             ))
     except Exception as error:
         return {'status': 'ERROR', 'file_name': 'BoT-Catalogue-Data-Entry', 'step': '7', 'message': str(error)}

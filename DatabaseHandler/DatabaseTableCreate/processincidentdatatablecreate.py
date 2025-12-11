@@ -9,11 +9,11 @@ def processed_incident_data_table_create(db_name: str, db_user: str, db_password
     # define connection params:S2
     try:
         database_connection_parameter = {
-            "dbname": str(db_name),
-            "user": str(db_user),
-            "password": str(db_password),
-            "host": str(db_host),
-            "port": str(db_port)
+            'dbname': str(db_name),
+            'user': str(db_user),
+            'password': str(db_password),
+            'host': str(db_host),
+            'port': str(db_port)
         }
         table_owner = str(db_user)
     except Exception as error:
