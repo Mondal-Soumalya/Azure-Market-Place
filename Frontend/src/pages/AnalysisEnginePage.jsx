@@ -138,12 +138,12 @@ const AnalysisEnginePage = () => {
 
   // Handle file selection
   const handleFileSelect = (file) => {
-    if (file && (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.csv'))) {
+    if (file && (file.name.toLowerCase().endsWith('.xlsx'))) {
       setFormData(prev => ({ ...prev, incident_file: file }));
       setFileName(file.name);
       toastLib.success(`File selected: ${file.name}`);
     } else {
-      toastLib.error('Please upload a .xlsx or .csv file.');
+      toastLib.error('Please upload a .xlsx file.');
       setFileName('');
     }
   };
@@ -350,7 +350,7 @@ const AnalysisEnginePage = () => {
                       <input
                         ref={fileInputRef}
                         type="file"
-                        accept=".xlsx,.csv"
+                        accept=".xlsx"
                         onChange={handleInputChange}
                         style={{ display: 'none' }}
                       />
@@ -386,7 +386,6 @@ const AnalysisEnginePage = () => {
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
                             <Chip label="Excel" size="small" variant="outlined" sx={{ height: 24 }} />
-                            <Chip label="CSV" size="small" variant="outlined" sx={{ height: 24 }} />
                           </Box>
                         </Box>
                       )}
@@ -426,7 +425,6 @@ const AnalysisEnginePage = () => {
                       </Typography>
                       <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6 }}>
                         <strong>.XLSX</strong> - Excel spreadsheets<br/>
-                        <strong>.CSV</strong> - Comma-separated values<br/>
                         <strong>File Size:</strong> No limit
                       </Typography>
                     </Box>
