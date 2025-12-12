@@ -1,0 +1,40 @@
+services:
+  flask-app:
+    build: .
+    image: prism-analytics:0.1
+    container_name: flask-app
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - prism-analytics-network
+
+  postgres-db:
+    image: postgres:15.15-trixie
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: ${ADMIN_DB_NAME}
+      POSTGRES_USER: ${ADMIN_DB_USER}
+      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - prism-analytics-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  prism-analytics-network:
+    driver: bridge
+
+volumes:
+  pgdata:
