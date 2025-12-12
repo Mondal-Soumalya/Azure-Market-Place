@@ -74,6 +74,8 @@ def database_auto_init() -> dict[str, str]: #type: ignore
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '7', 'message' : str(error)}
 
     # create database "user":S8
+    database_cursor = None
+    database_connection = None
     try:
         create_user_sql = sql.SQL("CREATE ROLE {} WITH LOGIN NOSUPERUSER CREATEDB NOCREATEROLE INHERIT NOREPLICATION NOBYPASSRLS CONNECTION LIMIT -1 PASSWORD %s").format(sql.Identifier(db_user))
         database_connection = psycopg2.connect(**admin_database_connection_parameter) #type: ignore
@@ -90,10 +92,14 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '8', 'message' : str(error)}
     finally:
-        database_cursor.close()
-        database_connection.close()
+        if database_cursor:
+            database_cursor.close()
+        if database_connection:
+            database_connection.close()
 
     # check if database is present:S9
+    database_cursor = None
+    database_connection = None
     try:
         database_existence_check_sql = '''
         SELECT EXISTS (
@@ -114,8 +120,10 @@ def database_auto_init() -> dict[str, str]: #type: ignore
     except Exception as error:
         return {'status' : 'ERROR', 'file_name' : 'Database-Auto-Init', 'step' : '9', 'message' : str(error)}
     finally:
-        database_cursor.close()
-        database_connection.close()
+        if database_cursor:
+            database_cursor.close()
+        if database_connection:
+            database_connection.close()
 
     # creating "application_log" table:S10
     # importing "application_log_table_create" function:S10-A

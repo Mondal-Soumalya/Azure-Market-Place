@@ -12,9 +12,10 @@ services:
         condition: service_healthy
     networks:
       - prism-analytics-network
+    restart: unless-stopped
 
   postgres-db:
-    image: postgres:15.15-trixie
+    image: postgres:15
     container_name: postgres-db
     environment:
       POSTGRES_DB: ${ADMIN_DB_NAME}
@@ -27,10 +28,11 @@ services:
     networks:
       - prism-analytics-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${ADMIN_DB_USER} -d ${ADMIN_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
 networks:
   prism-analytics-network:
