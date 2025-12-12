@@ -1,37 +1,9 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv/
-ENV/
-build/
-dist/
-*.egg-info/
-.eggs/
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Git
-.git/
-.gitignore
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Node
-node_modules/
-
-# Temp files
-*.tmp
-TempFilesDump/
-
+node_modules
+Frontend/node_modules
+__pycache__
+*.pyc
+*.log
+*.db
+*.zip
+*.tar
+*.tar.gz

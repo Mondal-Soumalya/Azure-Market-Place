@@ -111,13 +111,13 @@ export const apiEndpoints = {
   
   // Analysis
   incidentAnalysis: '/api/incidentanalysis',
-  serviceAnalysis: '/api/servicedeskanalysis',
+  // serviceAnalysis: '/api/servicedeskanalysis',
   
   // Dashboard
-  superAdminDashboard: '/api/superadmindashboard',
+  // superAdminDashboard: '/api/superadmindashboard',
   
   // Chat
-  chatbot: '/api/chatbot',
+  // chatbot: '/api/chatbot',
   
   // Logs
   applicationsLog: '/api/applicationslog'
