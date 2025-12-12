@@ -210,8 +210,8 @@ if __name__ == '__main__':
             print('INFO - [App:S12] Application built successfully')
             log_writer(script_name = 'App', steps = '12', status = 'SUCCESS', message = 'React application built successfully')
         else:
-            print('WARNING - [App:S12] Build completed with warnings or errors')
-            log_writer(script_name = 'App', steps = '12', status = 'WARNING', message = 'React build completed with warnings')
+            print('INFO - [App:S12] Build completed with warnings or errors')
+            log_writer(script_name = 'App', steps = '12', status = 'INFO', message = 'React build completed with warnings')
 
         # start the React development server on port 3000
         print('INFO - [App:S12] Starting web server on http://localhost:3000...')
@@ -235,7 +235,7 @@ if __name__ == '__main__':
                         react_process.terminate()
                         react_process.wait(timeout=5)
                 except Exception as e:
-                    print(f'WARNING - [App:S12] Error stopping web server: {str(e)}')
+                    print(f'INFO - [App:S12] Error stopping web server: {str(e)}')
 
         atexit.register(cleanup_react_server)
 
@@ -263,19 +263,19 @@ if __name__ == '__main__':
                             return next_port
                         except Exception:
                             time.sleep(1)
-            print(f'WARNING - [App:S12] web server did not start within {timeout} seconds on ports {port}-{port+9}.')
+            print(f'ERROR - [App:S12] web server did not start within {timeout} seconds on ports {port}-{port+9}.')
             return None
 
         selected_port = wait_for_port(3000)
         if selected_port is None:
-            print('WARNING - [App:S12] No available port found for React server (ports 3000-3009).')
+            print('INFO - [App:S12] No available port found for React server (ports 3000-3009).')
         else:
             print(f'INFO - [App:S12] React server running on port {selected_port}')
 
         log_writer(script_name = 'App', steps = '12', status = 'SUCCESS', message = 'web Server Started')
     except Exception as error:
-        print(f'WARNING - [App:S12] Failed to start web server: {str(error)}')
-        log_writer(script_name = 'App', steps = '12', status = 'WARNING', message = f'web Server Failed: {str(error)}')
+        print(f'ERROR - [App:S12] Failed to start web server: {str(error)}')
+        log_writer(script_name = 'App', steps = '12', status = 'ERROR', message = f'web Server Failed: {str(error)}')
 
     try:
         print('INFO - [App:S13] Starting Flask API server on http://127.0.0.1:5000')

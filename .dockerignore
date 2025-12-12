@@ -24,26 +24,14 @@ dist/
 .git/
 .gitignore
 
-# Documentation
-*.md
-README.md
-
 # OS
 .DS_Store
 Thumbs.db
 
 # Node
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Temp files
 *.tmp
-*.log
 TempFilesDump/
 
-# Docker
-docker-compose.yml
-Dockerfile
-.dockerignore
